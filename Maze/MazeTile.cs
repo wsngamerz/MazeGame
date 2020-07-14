@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MazeGame
+namespace MazeGame.Maze
 {
     public abstract class MapTile
     {

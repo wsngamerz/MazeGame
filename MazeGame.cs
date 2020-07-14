@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using MazeGame.Maze;
 using MazeGame.UI.Menu;
 
 namespace MazeGame
@@ -80,18 +81,18 @@ namespace MazeGame
         {
             var mainMenuLogo = new[]
             {
-                "███╗   ███╗ █████╗ ███████╗███████╗  ██████╗  █████╗ ███╗   ███╗███████╗",
-                "████╗ ████║██╔══██╗╚══███╔╝██╔════╝ ██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
-                "██╔████╔██║███████║  ███╔╝ █████╗   ██║  ███╗███████║██╔████╔██║█████╗  ",
-                "██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝   ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
-                "██║ ╚═╝ ██║██║  ██║███████╗███████╗ ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
-                "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝"
+                "███╗   ███╗ █████╗ ███████╗███████╗      ██████╗  █████╗ ███╗   ███╗███████╗",
+                "████╗ ████║██╔══██╗╚══███╔╝██╔════╝     ██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
+                "██╔████╔██║███████║  ███╔╝ █████╗       ██║  ███╗███████║██╔████╔██║█████╗  ",
+                "██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
+                "██║ ╚═╝ ██║██║  ██║███████╗███████╗     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
+                "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝"
             };
 
             string mainMenuInfo = $"v{Version} - Created by William Neild";
             
-            _screenBuffer.AddConstantRender((_screenBuffer.BufferWidth / 2) - (mainMenuLogo[0].Length / 2), 10, mainMenuLogo);
-            _screenBuffer.AddConstantRender(2, _screenBuffer.BufferHeight - 2, mainMenuInfo);
+            _screenBuffer.AddConstantRender((ScreenBuffer.BufferWidth / 2) - (mainMenuLogo[0].Length / 2), 10, mainMenuLogo);
+            _screenBuffer.AddConstantRender(2, ScreenBuffer.BufferHeight - 2, mainMenuInfo);
             
             _mainMenu.Show(_screenBuffer);
         }
@@ -102,19 +103,8 @@ namespace MazeGame
             screenBuffer.ClearRenderQueue();
             screenBuffer.ClearBuffer();
             
-            // draw text
-            FieldInfo[] fields = typeof(Character).GetFields();
-            for (var i = 0; i < fields.Length; i++)
-            {
-                var fieldInfo = fields[i];
-                screenBuffer.DrawText($"{fieldInfo.Name.PadRight(25)}: {fieldInfo.GetValue(fieldInfo)}", 5, i + 5);
-            }
-            
-            // draw the buffer
-            screenBuffer.Show();
-            
-            // hang until user input
-            Console.ReadKey();
+            // show the test screen
+            new TestScreen(screenBuffer).Show();
         }
 
         private void CreateNewMazeScreen(ScreenBuffer screenBuffer)

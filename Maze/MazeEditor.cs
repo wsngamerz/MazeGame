@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MazeGame
+namespace MazeGame.Maze
 {
     public class MazeEditor
     {
-        private readonly Maze _maze;
+        private readonly global::MazeGame.Maze.Maze _maze;
         private int _mazeOffsetX;
         private int _mazeOffsetY;
 
@@ -36,7 +36,7 @@ namespace MazeGame
         /// <param name="mazeName"></param>
         public MazeEditor(string mazeName)
         {
-            _maze = new Maze(10, 10);
+            _maze = new global::MazeGame.Maze.Maze(10, 10);
             _maze.Name = mazeName;
         }
 
@@ -44,7 +44,7 @@ namespace MazeGame
         /// Maze editor editing an existing maze
         /// </summary>
         /// <param name="maze"></param>
-        public MazeEditor(Maze maze)
+        public MazeEditor(global::MazeGame.Maze.Maze maze)
         {
             _maze = maze;
         }
@@ -65,7 +65,7 @@ namespace MazeGame
             _mazeUpdated = true;
             
             // minX, maxX, minY, maxY
-            _cursorBoundaries = new Tuple<int, int, int, int>(_mazeOffsetX, screenBuffer.BufferWidth - 2, _mazeOffsetY, screenBuffer.BufferHeight - 2);
+            _cursorBoundaries = new Tuple<int, int, int, int>(_mazeOffsetX, ScreenBuffer.BufferWidth - 2, _mazeOffsetY, ScreenBuffer.BufferHeight - 2);
             
              // map a direction to a set of delta x,y values
              _cursorDirectionDeltaMap = new Dictionary<Direction, Tuple<int, int>>()
@@ -78,11 +78,11 @@ namespace MazeGame
 
             // pre-calculate ui outline strings
             var uiTopSplitA = 80;
-            _uiLineTop = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.TopCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.TopRight}";
-            _uiLineTopMiddle = $"{Character.Vertical}{Utils.Repeat(" ", uiTopSplitA)}{Character.Vertical}{Utils.Repeat(" ", screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.Vertical}";
-            _uiLineTopSplit = $"{Character.MiddleLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.BottomCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.MiddleRight}";
-            _uiLineMiddle = $"{Character.Vertical}{Utils.Repeat(" ", screenBuffer.BufferWidth - 2)}{Character.Vertical}";
-            _uiLineBottom = $"{Character.BottomLeft}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - 2)}{Character.BottomRight}";
+            _uiLineTop = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.TopCentre}{Utils.Repeat(Character.Horizontal, ScreenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.TopRight}";
+            _uiLineTopMiddle = $"{Character.Vertical}{Utils.Repeat(" ", uiTopSplitA)}{Character.Vertical}{Utils.Repeat(" ", ScreenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.Vertical}";
+            _uiLineTopSplit = $"{Character.MiddleLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.BottomCentre}{Utils.Repeat(Character.Horizontal, ScreenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.MiddleRight}";
+            _uiLineMiddle = $"{Character.Vertical}{Utils.Repeat(" ", ScreenBuffer.BufferWidth - 2)}{Character.Vertical}";
+            _uiLineBottom = $"{Character.BottomLeft}{Utils.Repeat(Character.Horizontal, ScreenBuffer.BufferWidth - 2)}{Character.BottomRight}";
             
             // create all the pixel styles
             _cursorPixel = new Pixel()
@@ -121,7 +121,7 @@ namespace MazeGame
                 Console.SetCursorPosition(0, 0);
                 
                 // read input
-                var consoleKeyInfo = Console.ReadKey();
+                var consoleKeyInfo = Console.ReadKey(true);
                 var consoleKey = consoleKeyInfo.Key;
 
                 // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
@@ -201,7 +201,7 @@ namespace MazeGame
         private void DrawEditorUi(ScreenBuffer screenBuffer)
         {
             // draw screen outline
-            for (var y = 0; y < screenBuffer.BufferHeight; y++)
+            for (var y = 0; y < ScreenBuffer.BufferHeight; y++)
             {
                 switch (y)
                 {
@@ -221,16 +221,18 @@ namespace MazeGame
                         break;
                     
                     default:
-                        screenBuffer.DrawText(y == screenBuffer.BufferHeight - 1 ? _uiLineBottom : _uiLineMiddle, 0, y);
+                        screenBuffer.DrawText(y == ScreenBuffer.BufferHeight - 1 ? _uiLineBottom : _uiLineMiddle, 0, y);
                         break;
                 }
             }
             
             // draw maze info
+            string toolName = _currentTileTool == MazeTileType.None ? "Eraser" : $"{_currentTileTool}";
+            
             screenBuffer.DrawText($"Editing Maze: {_maze.Name}", 1, 1);
             screenBuffer.DrawText($"Tile count: {_maze.Map.Count.ToString()}", 1, 2);
-            screenBuffer.DrawText($"Current Tool: {_currentTileTool}", 1, 3);
-            screenBuffer.DrawText($"1 - Eraser : 2 - Wall : 3 - StartPos : 4 - FinishPos : 5 - PlayerPos", 1, 4);
+            screenBuffer.DrawText($"Current Tool: {toolName}", 1, 3);
+            screenBuffer.DrawText("1 - Eraser : 2 - Wall : 3 - StartPos : 4 - FinishPos : 5 - PlayerPos", 1, 4);
             
             // draw current tile info
             var currentTile = GetCursorMazeTile();
@@ -270,7 +272,7 @@ namespace MazeGame
                 };
                 mapPixels[i] = mapPixel;
             }
-            screenBuffer.DrawBox(_blankMapPixel, _mazeOffsetX, _mazeOffsetY, screenBuffer.BufferWidth - _mazeOffsetX - 1, screenBuffer.BufferHeight - _mazeOffsetY - 1);
+            screenBuffer.DrawBox(_blankMapPixel, _mazeOffsetX, _mazeOffsetY, ScreenBuffer.BufferWidth - _mazeOffsetX - 1, ScreenBuffer.BufferHeight - _mazeOffsetY - 1);
             screenBuffer.DrawPixels(mapPixels);
         }
 

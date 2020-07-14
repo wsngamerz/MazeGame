@@ -10,8 +10,8 @@ namespace MazeGame
 
         private List<Pixel> _constantRenderQueue = new List<Pixel>();
         
-        public int BufferWidth => ScreenBufferArray.GetLength(0);
-        public int BufferHeight => ScreenBufferArray.GetLength(1);
+        public static int BufferWidth => ScreenBufferArray.GetLength(0);
+        public static int BufferHeight => ScreenBufferArray.GetLength(1);
 
         /// <summary>
         /// Used to draw a frame all in one go

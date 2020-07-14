@@ -1,4 +1,4 @@
-﻿namespace MazeGame
+﻿namespace MazeGame.Maze
 {
     public class MazePlayer
     {
@@ -6,7 +6,7 @@
         /// Start a maze game 'game'
         /// </summary>
         /// <param name="maze"></param>
-        public MazePlayer(Maze maze)
+        public MazePlayer(global::MazeGame.Maze.Maze maze)
         {
             
         }

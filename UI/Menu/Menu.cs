@@ -128,8 +128,8 @@ namespace MazeGame.UI.Menu
             int menuBackgroundHeight = (_menuItems.Count * 2) + (_menuTitle == null ? 1 : 3);
             
             // menu starting locations
-            int startY = (screenBuffer.BufferHeight / 2) - (menuBackgroundHeight / 2);
-            int startX = (screenBuffer.BufferWidth / 2) - (menuBackgroundWidth / 2);
+            int startY = (ScreenBuffer.BufferHeight / 2) - (menuBackgroundHeight / 2);
+            int startX = (ScreenBuffer.BufferWidth / 2) - (menuBackgroundWidth / 2);
             
             // style pixels
             var menuBackgroundPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale240 };
