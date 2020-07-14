@@ -2,6 +2,9 @@
 
 namespace MazeGame.Maze
 {
+    /// <summary>
+    /// The maze data class
+    /// </summary>
     public class Maze
     {
         public string Name;

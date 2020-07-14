@@ -6,9 +6,9 @@ namespace MazeGame
 {
     class Program
     {
-        public static int ApplicationWidth = 180;
-        public static int ApplicationHeight = 50;
-        
+        private const int ApplicationWidth = 180;
+        private const int ApplicationHeight = 50;
+
         /// <summary>
         /// Entry-point into the application
         ///

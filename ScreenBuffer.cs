@@ -6,12 +6,12 @@ namespace MazeGame
 {
     public class ScreenBuffer
     {
-        private static readonly string[,] ScreenBufferArray = new string[Console.WindowWidth, Console.WindowHeight];
+        private readonly string[,] _screenBufferArray = new string[Console.WindowWidth, Console.WindowHeight];
 
         private List<Pixel> _constantRenderQueue = new List<Pixel>();
         
-        public static int BufferWidth => ScreenBufferArray.GetLength(0);
-        public static int BufferHeight => ScreenBufferArray.GetLength(1);
+        public int BufferWidth => _screenBufferArray.GetLength(0);
+        public int BufferHeight => _screenBufferArray.GetLength(1);
 
         /// <summary>
         /// Used to draw a frame all in one go
@@ -34,7 +34,7 @@ namespace MazeGame
             drawPixel += pixel.ForegroundColor ?? "";
             drawPixel += pixel.Character ?? " ";
             drawPixel += pixel.ResetAfter ? Style.Reset : "";
-            ScreenBufferArray[pixel.X, pixel.Y] = drawPixel;
+            _screenBufferArray[pixel.X, pixel.Y] = drawPixel;
         }
 
         /// <summary>
@@ -110,6 +110,14 @@ namespace MazeGame
             DrawText(pixel, text, x, y);
         }
 
+        public void DrawText(string[] text, int x, int y)
+        {
+            for (var i = 0; i < text.Length; i++)
+            {
+                DrawText(text[i], x, y + i);
+            }
+        }
+
         /// <summary>
         /// Add an item that will be constantly drawn to the screen until
         /// the queue is cleared
@@ -127,14 +135,17 @@ namespace MazeGame
 
         public void AddConstantRender(int x, int y, string text)
         {
-            for (int dx = 0; dx < text.Length; dx++)
+            for (var dx = 0; dx < text.Length; dx++)
             {
-                _constantRenderQueue.Add(new Pixel()
+                if (!string.IsNullOrWhiteSpace(text[dx].ToString()))
                 {
-                    X = x + dx,
-                    Y = y,
-                    Character = text[dx].ToString()
-                });
+                    _constantRenderQueue.Add(new Pixel()
+                    {
+                        X = x + dx,
+                        Y = y,
+                        Character = text[dx].ToString()
+                    });   
+                }
             }
         }
 
@@ -147,7 +158,7 @@ namespace MazeGame
             {
                 for (var y = 0; y < BufferHeight; y++)
                 {
-                    ScreenBufferArray[x, y] = " ";
+                    _screenBufferArray[x, y] = " ";
                 }
             }
         }
@@ -169,7 +180,7 @@ namespace MazeGame
             
             for (var y = 0; y < BufferHeight; y++)
             {
-                string[] currentRow = Enumerable.Range(0, BufferWidth).Select(x => ScreenBufferArray[x, y]).ToArray();
+                string[] currentRow = Enumerable.Range(0, BufferWidth).Select(x => _screenBufferArray[x, y]).ToArray();
                 Console.SetCursorPosition(0, y);
                 Console.Write(string.Join("", currentRow));
             }

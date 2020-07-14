@@ -3,7 +3,10 @@ using System.Text;
 
 namespace MazeGame
 {
-    public class Utils
+    /// <summary>
+    /// A utility class
+    /// </summary>
+    public static class Utils
     {
         /// <summary>
         /// Centers the string given the length of the section it needs to bve centered in

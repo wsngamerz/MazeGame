@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace MazeGame
@@ -11,10 +10,7 @@ namespace MazeGame
     {
         private const int StdOutputHandle = -11;
         private const int StdInputHandle = -10;
-        
-        private const int LfFacesize = 32;
-        private const int TmpfTruetype = 4;
-        
+
         private const uint EnableExtendedFlags = 0x0080;
         private const uint EnableQuickEditMode = 0x0040;
         private const uint EnableVirtualTerminalProcessing = 0x0004;
@@ -38,6 +34,9 @@ namespace MazeGame
             SetupOutput();
         }
 
+        /// <summary>
+        /// Setup the console input
+        /// </summary>
         private static void SetupInput()
         {
             // get the input handle
@@ -61,6 +60,9 @@ namespace MazeGame
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// setup the console output
+        /// </summary>
         private static void SetupOutput()
         {
             // get the output handle

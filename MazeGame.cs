@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using MazeGame.Maze;
 using MazeGame.UI.Menu;
 
@@ -91,12 +90,16 @@ namespace MazeGame
 
             string mainMenuInfo = $"v{Version} - Created by William Neild";
             
-            _screenBuffer.AddConstantRender((ScreenBuffer.BufferWidth / 2) - (mainMenuLogo[0].Length / 2), 10, mainMenuLogo);
-            _screenBuffer.AddConstantRender(2, ScreenBuffer.BufferHeight - 2, mainMenuInfo);
+            _screenBuffer.AddConstantRender(_screenBuffer.BufferWidth / 2 - mainMenuLogo[0].Length / 2, 10, mainMenuLogo);
+            _screenBuffer.AddConstantRender(2, _screenBuffer.BufferHeight - 2, mainMenuInfo);
             
             _mainMenu.Show(_screenBuffer);
         }
 
+        /// <summary>
+        /// Displays the test screen
+        /// </summary>
+        /// <param name="screenBuffer"></param>
         private static void TestScreen(ScreenBuffer screenBuffer)
         {
             // clear buffer and the constant render queue
@@ -107,6 +110,10 @@ namespace MazeGame
             new TestScreen(screenBuffer).Show();
         }
 
+        /// <summary>
+        /// opens the map editor for a new maze
+        /// </summary>
+        /// <param name="screenBuffer"></param>
         private void CreateNewMazeScreen(ScreenBuffer screenBuffer)
         {
             // Stop the menu from rendering

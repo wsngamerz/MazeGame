@@ -1,5 +1,8 @@
 ﻿namespace MazeGame
 {
+    /// <summary>
+    /// a character
+    /// </summary>
     public class Character
     {
         // Block Characters
