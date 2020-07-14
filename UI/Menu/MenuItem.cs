@@ -2,9 +2,15 @@
 {
     public class MenuItem
     {
-        private MenuCallback _menuCallback;
+        private readonly MenuCallback _menuCallback;
         public string Text { get; }
+        public bool HasCallback => _menuCallback != null;
 
+        public MenuItem(string menuText)
+        {
+            Text = menuText;
+        }
+        
         public MenuItem(string menuText, MenuCallback menuCallback)
         {
             Text = menuText;
@@ -19,7 +25,7 @@
 
         public void Select(ScreenBuffer screenBuffer)
         {
-            _menuCallback(screenBuffer);
+            _menuCallback?.Invoke(screenBuffer);
         }
     }
 

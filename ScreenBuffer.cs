@@ -8,6 +8,8 @@ namespace MazeGame
     {
         private static readonly string[,] ScreenBufferArray = new string[Console.WindowWidth, Console.WindowHeight];
 
+        private List<Pixel> _constantRenderQueue = new List<Pixel>();
+        
         public int BufferWidth => ScreenBufferArray.GetLength(0);
         public int BufferHeight => ScreenBufferArray.GetLength(1);
 
@@ -26,7 +28,13 @@ namespace MazeGame
         /// <param name="pixel"></param>
         public void DrawPixel(Pixel pixel)
         {
-            ScreenBufferArray[pixel.X, pixel.Y] = $"{pixel.ForegroundColor}{pixel.BackgroundColor}{pixel.Character}{(pixel.ResetAfter ? Style.Reset : "")}";
+            var drawPixel = "";
+
+            drawPixel += pixel.BackgroundColor ?? "";
+            drawPixel += pixel.ForegroundColor ?? "";
+            drawPixel += pixel.Character ?? " ";
+            drawPixel += pixel.ResetAfter ? Style.Reset : "";
+            ScreenBufferArray[pixel.X, pixel.Y] = drawPixel;
         }
 
         /// <summary>
@@ -64,7 +72,7 @@ namespace MazeGame
                         Y = j,
                         BackgroundColor = basePixel.BackgroundColor,
                         ForegroundColor = basePixel.ForegroundColor,
-                        ResetAfter = false
+                        ResetAfter = true
                     });
                 }
             }
@@ -81,23 +89,53 @@ namespace MazeGame
         /// <param name="y"></param>
         public void DrawText(Pixel basePixel, string text, int x, int y)
         {
-            var pixelList = new List<Pixel>();
-            char[] textChars = text.ToCharArray();
-
-            for (var i = 0; i < textChars.Length; i++)
+            DrawPixels(text.ToCharArray().Select((t, i) => new Pixel()
             {
-                pixelList.Add(new Pixel()
+                Character = t.ToString(),
+                X = x + i,
+                Y = y,
+                BackgroundColor = basePixel.BackgroundColor,
+                ForegroundColor = basePixel.ForegroundColor,
+                ResetAfter = true
+            }));
+        }
+
+        public void DrawText(string text, int x, int y)
+        {
+            var pixel = new Pixel()
+            {
+                BackgroundColor = Style.BackgroundColor.Black,
+                ForegroundColor = Style.ForegroundColor.White
+            };
+            DrawText(pixel, text, x, y);
+        }
+
+        /// <summary>
+        /// Add an item that will be constantly drawn to the screen until
+        /// the queue is cleared
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="multilineText"></param>
+        /// <param name="x"></param>
+        public void AddConstantRender(int x, int y, string[] multilineText)
+        {
+            for (int dy = 0; dy < multilineText.Length; dy++)
+            {
+                AddConstantRender(x, y + dy, multilineText[dy]);
+            }
+        }
+
+        public void AddConstantRender(int x, int y, string text)
+        {
+            for (int dx = 0; dx < text.Length; dx++)
+            {
+                _constantRenderQueue.Add(new Pixel()
                 {
-                    Character = textChars[i].ToString(),
-                    X = x + i,
+                    X = x + dx,
                     Y = y,
-                    BackgroundColor = basePixel.BackgroundColor,
-                    ForegroundColor = basePixel.ForegroundColor,
-                    ResetAfter = false
+                    Character = text[dx].ToString()
                 });
             }
-            
-            DrawPixels(pixelList);
         }
 
         /// <summary>
@@ -113,12 +151,22 @@ namespace MazeGame
                 }
             }
         }
+
+        /// <summary>
+        /// Clear the render queue
+        /// </summary>
+        public void ClearRenderQueue()
+        {
+            _constantRenderQueue = new List<Pixel>();
+        }
         
         /// <summary>
         /// draw the internal screen buffer to the console
         /// </summary>
         public void Show()
         {
+            DrawPixels(_constantRenderQueue);
+            
             for (var y = 0; y < BufferHeight; y++)
             {
                 string[] currentRow = Enumerable.Range(0, BufferWidth).Select(x => ScreenBufferArray[x, y]).ToArray();

@@ -1,25 +1,36 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-
-namespace MazeGame
+﻿namespace MazeGame
 {
     public class Character
     {
         // Block Characters
-        public static string LightBlock = "░";
-        public static string MediumBlock = "▒";
-        public static string HeavyBlock = "▓";
-        public static string SolidBlock = "█";
+        public const string LightBlock = "░";
+        public const string MediumBlock = "▒";
+        public const string HeavyBlock = "▓";
+        public const string SolidBlock = "█";
+        
+        // Box drawing
+        public const string Horizontal = "─";
+        public const string Vertical = "│";
+        public const string TopLeft = "┌";
+        public const string TopCentre = "┬";
+        public const string TopRight = "┐";
+        public const string MiddleLeft = "├";
+        public const string Centre = "┼";
+        public const string MiddleRight = "┤";
+        public const string BottomLeft = "└";
+        public const string BottomCentre = "┴";
+        public const string BottomRight = "┘";
         
         // Square Characters
-        public static string SolidSquare = "■";
-        public static string HollowSquare = "□";
-        public static string RoundedHollowSquare = "▢";
+        public const string SolidSquare = "■";
+        public const string HollowSquare = "□";
+        public const string RoundedHollowSquare = "▢";
 
         // Assorted Characters
-        public static string Warning = "⚠";
-        public static string Question = "❔";
-        public static string Exclamation = "❕";
-        public static string Tick = "✔";
-        public static string Cross = "✘";
+        public const string Warning = "⚠";
+        public const string Question = "❔";
+        public const string Exclamation = "❕";
+        public const string Tick = "✔";
+        public const string Cross = "✘";
     }
 }

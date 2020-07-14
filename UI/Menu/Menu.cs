@@ -13,9 +13,19 @@ namespace MazeGame.UI.Menu
         private bool _updateNeeded = true;
         private int _menuWidth;
         
-        private const int MenuPadding = 3;
-        private const int MenuTextPadding = 3;
+        // padding each side
+        private const int MenuPadding = 2;
+        private const int MenuTextPadding = 4;
 
+        /// <summary>
+        /// a menu component
+        /// </summary>
+        public Menu()
+        {
+            _menuTitle = null;
+            _menuWidth = 0;
+        }
+        
         /// <summary>
         /// a menu component
         /// </summary>
@@ -40,6 +50,35 @@ namespace MazeGame.UI.Menu
             {
                 _menuWidth = menuItemLength;
             }
+        }
+
+        /// <summary>
+        /// Add an item to menu
+        /// </summary>
+        /// <param name="menuItemName"></param>
+        public void AddItem(string menuItemName)
+        {
+            AddItem(new MenuItem(menuItemName));
+        }
+        
+        /// <summary>
+        /// add an item to menu
+        /// </summary>
+        /// <param name="menuItemName"></param>
+        /// <param name="menuItemMenu"></param>
+        public void AddItem(string menuItemName, Menu menuItemMenu)
+        {
+            AddItem(new MenuItem(menuItemName, menuItemMenu));
+        }
+        
+        /// <summary>
+        /// add an item to menu
+        /// </summary>
+        /// <param name="menuItemName"></param>
+        /// <param name="menuItemCallback"></param>
+        public void AddItem(string menuItemName, MenuCallback menuItemCallback)
+        {
+            AddItem(new MenuItem(menuItemName, menuItemCallback));
         }
 
         /// <summary>
@@ -84,26 +123,38 @@ namespace MazeGame.UI.Menu
         /// </summary>
         private void Draw(ScreenBuffer screenBuffer)
         {
+            // calculate the size of the menus
+            int menuBackgroundWidth = _menuWidth + (2 * MenuPadding) + (2 * MenuTextPadding);
+            int menuBackgroundHeight = (_menuItems.Count * 2) + (_menuTitle == null ? 1 : 3);
+            
             // menu starting locations
-            int startY = (screenBuffer.BufferHeight / 2) - (_menuItems.Count / 2);
-            int startX = (screenBuffer.BufferWidth / 2) - ((_menuWidth + MenuPadding + MenuTextPadding) / 2);
+            int startY = (screenBuffer.BufferHeight / 2) - (menuBackgroundHeight / 2);
+            int startX = (screenBuffer.BufferWidth / 2) - (menuBackgroundWidth / 2);
             
             // style pixels
-            var menuBackgroundPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.BrightBlack };
-            var menuTitlePixel = new Pixel() { BackgroundColor = Style.BackgroundColor.BrightBlack, ForegroundColor = Style.ForegroundColor.White };
-            var menuItemPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Blue, ForegroundColor = Style.ForegroundColor.White };
-            var menuItemSelectedPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Cyan, ForegroundColor = Style.ForegroundColor.BrightWhite };
+            var menuBackgroundPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale240 };
+            var menuTitlePixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale240, ForegroundColor = Style.ForegroundColor.White };
+            var menuItemPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale245, ForegroundColor = Style.ForegroundColor.Black };
+            var menuItemSelectedPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale250, ForegroundColor = Style.ForegroundColor.Black };
             
             // draw the background
-            screenBuffer.DrawBox(menuBackgroundPixel, startX, startY, _menuWidth + (2 * MenuPadding) + (2 * MenuTextPadding), _menuItems.Count + 4);
+            screenBuffer.DrawBox(menuBackgroundPixel, startX, startY, menuBackgroundWidth, menuBackgroundHeight);
+            
+            // calculate the available characters for the menu elements
+            int menuItemAvailChars = _menuWidth + (2 * MenuTextPadding);
             
             // draw the menu title
-            screenBuffer.DrawText(menuTitlePixel, _menuTitle, startX, startY);
+            if (_menuTitle != null)
+            {
+                screenBuffer.DrawText(menuTitlePixel, Utils.CenterText(_menuTitle, menuItemAvailChars), startX + MenuPadding, startY + 1);   
+            }
             
             // draw the menu items
+            var index = 0;
             for (var i = 0; i < _menuItems.Count; i++)
             {
-                screenBuffer.DrawText((i == _selectedItem ? menuItemSelectedPixel : menuItemPixel), _menuItems[i].Text, startX + MenuTextPadding, startY + i + 2);
+                screenBuffer.DrawText((i == _selectedItem ? menuItemSelectedPixel : menuItemPixel), Utils.CenterText(_menuItems[i].Text, menuItemAvailChars), startX + MenuPadding, startY + index + (_menuTitle==null?1:3));
+                index += 2;
             }
             
             // write the screen buffer to console
@@ -145,6 +196,8 @@ namespace MazeGame.UI.Menu
         /// </summary>
         private void SelectItem(ScreenBuffer screenBuffer)
         {
+            if (!_menuItems[_selectedItem].HasCallback) return;
+            
             _isRunning = false;
             _updateNeeded = true;
 

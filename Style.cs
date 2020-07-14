@@ -1,4 +1,6 @@
-﻿namespace MazeGame
+﻿using System;
+
+namespace MazeGame
 {
     public static class Style
     {
@@ -25,6 +27,8 @@
             public const string BrightMagenta = "\u001b[35;1m";
             public const string BrightCyan = "\u001b[36;1m";
             public const string BrightWhite = "\u001b[37;1m";
+
+            public const string Grayscale235 = "\x1b[38;5;235m";
         }
 
         public static class BackgroundColor
@@ -45,6 +49,26 @@
             public const string BrightMagenta = "\u001b[45;1m";
             public const string BrightCyan = "\u001b[46;1m";
             public const string BrightWhite = "\u001b[47;1m";
+
+            public const string Grayscale235 = "\x1b[48;5;235m";
+            public const string Grayscale240 = "\x1b[48;5;240m";
+            public const string Grayscale245 = "\x1b[48;5;245m";
+            public const string Grayscale250 = "\x1b[48;5;250m";
+
+            public static string FromForeground(string foregroundColour)
+            {
+                var backgroundColour = "";
+                if (foregroundColour.Contains("\u001b"))
+                {
+                    backgroundColour = foregroundColour.Replace("[3", "[4");
+                }
+                else
+                {
+                    throw new NotImplementedException("Not implemented vt colour conversion yet");
+                }
+                
+                return backgroundColour;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace MazeGame
@@ -9,6 +10,13 @@ namespace MazeGame
     public static class WindowsSetup
     {
         private const int StdOutputHandle = -11;
+        private const int StdInputHandle = -10;
+        
+        private const int LfFacesize = 32;
+        private const int TmpfTruetype = 4;
+        
+        private const uint EnableExtendedFlags = 0x0080;
+        private const uint EnableQuickEditMode = 0x0040;
         private const uint EnableVirtualTerminalProcessing = 0x0004;
         private const uint DisableNewlineAutoReturn = 0x0008;
 
@@ -26,20 +34,53 @@ namespace MazeGame
 
         public static void SetupConsole()
         {
+            SetupInput();
+            SetupOutput();
+        }
+
+        private static void SetupInput()
+        {
+            // get the input handle
+            var iStdIn = GetStdHandle(StdInputHandle);
+            
+            // get the current input console mode
+            if (!GetConsoleMode(iStdIn, out uint inConsoleMode))
+            {
+                Console.WriteLine("failed to get input console mode");
+                Console.ReadKey();
+                return;
+            }
+            
+            // add the flags to disable quick select mode
+            inConsoleMode &= ~EnableQuickEditMode;
+            inConsoleMode |= EnableExtendedFlags;
+            
+            // set the input console mode and return if successful
+            if (SetConsoleMode(iStdIn, inConsoleMode)) return;
+            Console.WriteLine($"failed to set input console mode, error code: {GetLastError().ToString()}");
+            Console.ReadKey();
+        }
+
+        private static void SetupOutput()
+        {
+            // get the output handle
             var iStdOut = GetStdHandle(StdOutputHandle);
-            if (!GetConsoleMode(iStdOut, out var outConsoleMode))
+            
+            // get the current output console mode
+            if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
             {
                 Console.WriteLine("failed to get output console mode");
                 Console.ReadKey();
                 return;
             }
 
+            // add the flags to enable vt support for colours and disable automatic newlines
             outConsoleMode |= EnableVirtualTerminalProcessing | DisableNewlineAutoReturn;
+
+            // set the output console mode and return if successful
             if (SetConsoleMode(iStdOut, outConsoleMode)) return;
-            
             Console.WriteLine($"failed to set output console mode, error code: {GetLastError().ToString()}");
             Console.ReadKey();
-            return;
         }
     }
 }
