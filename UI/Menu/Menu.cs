@@ -132,10 +132,10 @@ namespace MazeGame.UI.Menu
             int startX = (screenBuffer.BufferWidth / 2) - (menuBackgroundWidth / 2);
             
             // style pixels
-            var menuBackgroundPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale240 };
-            var menuTitlePixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale240, ForegroundColor = Style.ForegroundColor.White };
-            var menuItemPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale245, ForegroundColor = Style.ForegroundColor.Black };
-            var menuItemSelectedPixel = new Pixel() { BackgroundColor = Style.BackgroundColor.Grayscale250, ForegroundColor = Style.ForegroundColor.Black };
+            var menuBackgroundPixel = new Pixel(null, Style.BackgroundColor.Grayscale240);
+            var menuTitlePixel = new Pixel(Style.ForegroundColor.White, Style.BackgroundColor.Grayscale240);
+            var menuItemPixel = new Pixel(Style.ForegroundColor.Black, Style.BackgroundColor.Grayscale245);
+            var menuItemSelectedPixel = new Pixel(Style.ForegroundColor.Black, Style.BackgroundColor.Grayscale250);
             
             // draw the background
             screenBuffer.DrawBox(menuBackgroundPixel, startX, startY, menuBackgroundWidth, menuBackgroundHeight);

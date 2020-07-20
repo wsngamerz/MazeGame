@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -109,22 +109,9 @@ namespace MazeGame.Maze
                 }
             }
             
-            // create all the pixel styles
-            _cursorPixel = new Pixel()
-            {
-                Character = Character.LightBlock,
-                ForegroundColor = Style.ForegroundColor.Cyan,
-                BackgroundColor = Style.BackgroundColor.Grayscale235,
-                ResetAfter = true
-            };
-            
-            _blankMapPixel = new Pixel()
-            {
-                Character = " ",
-                ForegroundColor = Style.ForegroundColor.White,
-                BackgroundColor = Style.BackgroundColor.Grayscale235,
-                ResetAfter = true
-            };
+            // create the pixel styles
+            _cursorPixel = new Pixel(Character.MediumBlock, Style.ForegroundColor.Cyan, Style.BackgroundColor.Grayscale235);
+            _blankMapPixel = new Pixel(Style.ForegroundColor.White, Style.BackgroundColor.Grayscale235);
 
             // set the current pixel
             _currentTileTool = MazeTileType.None;
@@ -142,14 +129,13 @@ namespace MazeGame.Maze
 
             // add the ui border as a constant render
             screenBuffer.AddConstantRender(0, 0, _uiOutline);
-            
+
             while (_isEditorRunning)
             {
-                // TODO: Check whether need to actually update
+                // we shouldn't need to check whether we need to update as this loop will only continue
+                // on user input
                 Draw(screenBuffer);
-                
-                Console.SetCursorPosition(0, 0);
-                
+
                 // read input
                 var consoleKeyInfo = Console.ReadKey(true);
                 var consoleKey = consoleKeyInfo.Key;
@@ -162,48 +148,54 @@ namespace MazeGame.Maze
                         MoveCursor(0, -1);
                         _cursorDirection = Direction.Up;
                         break;
-                    
+                        
                     case ConsoleKey.DownArrow:
                         MoveCursor(0, 1);
                         _cursorDirection = Direction.Down;
                         break;
-                    
+                        
                     case ConsoleKey.LeftArrow:
                         MoveCursor(-1, 0);
                         _cursorDirection = Direction.Left;
                         break;
-                    
+                        
                     case ConsoleKey.RightArrow:
                         MoveCursor(1, 0);
                         _cursorDirection = Direction.Right;
                         break;
-                    
+                        
                     // Draw a pixel
                     case ConsoleKey.Spacebar:
-                        MazeDraw();
+                        DrawTile();
                         break;
-                        
+                            
                     // pixel selection
                     case ConsoleKey.D1:
                         _currentTileTool = MazeTileType.None;
                         break;
-                    
+                        
                     case ConsoleKey.D2:
                         _currentTileTool = MazeTileType.Wall;
                         break;
-                    
+                        
                     case ConsoleKey.D3:
                         _currentTileTool = MazeTileType.Start;
                         break;
-                    
+                        
                     case ConsoleKey.D4:
                         _currentTileTool = MazeTileType.Finish;
                         break;
-                    
+                        
                     case ConsoleKey.D5:
                         _currentTileTool = MazeTileType.Player;
                         break;
                 }
+                
+                // clear any other input
+                // NOTE: This isn't ideal but this prevents a queue of keys to be read
+                //       if the user holds down a key which would cause "input lag" of
+                //       considerable effect.
+                while (Console.KeyAvailable) Console.ReadKey(true);
             }
         }
 
@@ -265,16 +257,7 @@ namespace MazeGame.Maze
                 for (var i = 0; i < _mapPixels.Length; i++)
                 {
                     var mapTile = _maze.Map[i];
-                    var mapPixel = new Pixel()
-                    {
-                        X = mapTile.X + _mazeOffsetX,
-                        Y = mapTile.Y + _mazeOffsetY,
-                        Character = mapTile.Char,
-                        BackgroundColor = mapTile.BackgroundColour,
-                        ForegroundColor = mapTile.ForegroundColour,
-                        ResetAfter = false
-                    };
-                    _mapPixels[i] = mapPixel;
+                    _mapPixels[i] = new Pixel(mapTile.Char, mapTile.X + _mazeOffsetX, mapTile.Y + _mazeOffsetY, mapTile.ForegroundColour, mapTile.BackgroundColour, false);
                 }    
             }
             
@@ -318,7 +301,7 @@ namespace MazeGame.Maze
         /// <summary>
         /// called when the used edits the maze
         /// </summary>
-        private void MazeDraw()
+        private void DrawTile()
         {
             // remove the existing pixel if it already exists
             var mapTile = GetCursorMazeTile();

@@ -6,7 +6,16 @@ namespace MazeGame
 {
     public class MazeGame
     {
-        public const string Version = "0.0.1.0 ALPHA";
+        private const string Version = "0.0.1.0 ALPHA";
+        private static readonly string[] MenuLogo = new[]
+        {
+            "███╗   ███╗ █████╗ ███████╗███████╗      ██████╗  █████╗ ███╗   ███╗███████╗",
+            "████╗ ████║██╔══██╗╚══███╔╝██╔════╝     ██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
+            "██╔████╔██║███████║  ███╔╝ █████╗       ██║  ███╗███████║██╔████╔██║█████╗  ",
+            "██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
+            "██║ ╚═╝ ██║██║  ██║███████╗███████╗     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
+            "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝"
+        };
         
         private readonly ScreenBuffer _screenBuffer = new ScreenBuffer();
         
@@ -78,20 +87,8 @@ namespace MazeGame
         /// </summary>
         public void Start()
         {
-            var mainMenuLogo = new[]
-            {
-                "███╗   ███╗ █████╗ ███████╗███████╗      ██████╗  █████╗ ███╗   ███╗███████╗",
-                "████╗ ████║██╔══██╗╚══███╔╝██╔════╝     ██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
-                "██╔████╔██║███████║  ███╔╝ █████╗       ██║  ███╗███████║██╔████╔██║█████╗  ",
-                "██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
-                "██║ ╚═╝ ██║██║  ██║███████╗███████╗     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
-                "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝"
-            };
-
-            string mainMenuInfo = $"v{Version} - Created by William Neild";
-            
-            _screenBuffer.AddConstantRender(_screenBuffer.BufferWidth / 2 - mainMenuLogo[0].Length / 2, 10, mainMenuLogo);
-            _screenBuffer.AddConstantRender(2, _screenBuffer.BufferHeight - 2, mainMenuInfo);
+            _screenBuffer.AddConstantRender(_screenBuffer.BufferWidth / 2 - MenuLogo[0].Length / 2, 10, MenuLogo);
+            _screenBuffer.AddConstantRender(2, _screenBuffer.BufferHeight - 2, $"v{Version} - Created by William Neild");
             
             _mainMenu.Show(_screenBuffer);
         }

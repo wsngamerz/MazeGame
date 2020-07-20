@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MazeGame
 {
-    class Program
+    internal static class Program
     {
         private const int ApplicationWidth = 180;
         private const int ApplicationHeight = 50;
@@ -16,7 +16,7 @@ namespace MazeGame
         /// fixes windows!
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // change some windows specific options to enable ansi escape sequences
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

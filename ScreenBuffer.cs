@@ -28,13 +28,7 @@ namespace MazeGame
         /// <param name="pixel"></param>
         public void DrawPixel(Pixel pixel)
         {
-            var drawPixel = "";
-
-            drawPixel += pixel.BackgroundColor ?? "";
-            drawPixel += pixel.ForegroundColor ?? "";
-            drawPixel += pixel.Character ?? " ";
-            drawPixel += pixel.ResetAfter ? Style.Reset : "";
-            _screenBufferArray[pixel.X, pixel.Y] = drawPixel;
+            _screenBufferArray[pixel.X, pixel.Y] = pixel.ToString();
         }
 
         /// <summary>
@@ -65,15 +59,7 @@ namespace MazeGame
             {
                 for (int j = y; j < y + dy; j++)
                 {
-                    pixelList.Add(new Pixel()
-                    {
-                        Character = " ",
-                        X = i,
-                        Y = j,
-                        BackgroundColor = basePixel.BackgroundColor,
-                        ForegroundColor = basePixel.ForegroundColor,
-                        ResetAfter = true
-                    });
+                    pixelList.Add(new Pixel(" ", i, j, basePixel.BackgroundColor, basePixel.ForegroundColor, true));
                 }
             }
             
@@ -89,24 +75,12 @@ namespace MazeGame
         /// <param name="y"></param>
         public void DrawText(Pixel basePixel, string text, int x, int y)
         {
-            DrawPixels(text.ToCharArray().Select((t, i) => new Pixel()
-            {
-                Character = t.ToString(),
-                X = x + i,
-                Y = y,
-                BackgroundColor = basePixel.BackgroundColor,
-                ForegroundColor = basePixel.ForegroundColor,
-                ResetAfter = true
-            }));
+            DrawPixels(text.ToCharArray().Select((t, i) => new Pixel(t.ToString(), x + i, y, basePixel.BackgroundColor, basePixel.ForegroundColor, true)));
         }
 
         public void DrawText(string text, int x, int y)
         {
-            var pixel = new Pixel()
-            {
-                BackgroundColor = Style.BackgroundColor.Black,
-                ForegroundColor = Style.ForegroundColor.White
-            };
+            var pixel = new Pixel(Style.ForegroundColor.White, Style.BackgroundColor.Black);
             DrawText(pixel, text, x, y);
         }
 
@@ -127,7 +101,7 @@ namespace MazeGame
         /// <param name="x"></param>
         public void AddConstantRender(int x, int y, string[] multilineText)
         {
-            for (int dy = 0; dy < multilineText.Length; dy++)
+            for (var dy = 0; dy < multilineText.Length; dy++)
             {
                 AddConstantRender(x, y + dy, multilineText[dy]);
             }
@@ -137,14 +111,9 @@ namespace MazeGame
         {
             for (var dx = 0; dx < text.Length; dx++)
             {
-                if (!string.IsNullOrWhiteSpace(text[dx].ToString()))
+                if (text[dx] != ' ')
                 {
-                    _constantRenderQueue.Add(new Pixel()
-                    {
-                        X = x + dx,
-                        Y = y,
-                        Character = text[dx].ToString()
-                    });   
+                    _constantRenderQueue.Add(new Pixel(text[dx].ToString(), x + dx, y, null, null, false));   
                 }
             }
         }
@@ -187,13 +156,47 @@ namespace MazeGame
         }
     }
 
-    public class Pixel
+    public struct Pixel
     {
+        public Pixel(string character, int x, int y, string foregroundColor, string backgroundColor, bool resetAfter)
+        {
+            Character = character;
+            X = x;
+            Y = y;
+            ForegroundColor = foregroundColor;
+            BackgroundColor = backgroundColor;
+            ResetAfter = resetAfter;
+        }
+
+        public Pixel(string character, string foregroundColor, string backgroundColor)
+        {
+            Character = character;
+            ForegroundColor = foregroundColor;
+            BackgroundColor = backgroundColor;
+
+            X = 0;
+            Y = 0;
+            ResetAfter = false;
+        }
+
+        public Pixel(string foregroundColor, string backgroundColor)
+        {
+            ForegroundColor = foregroundColor;
+            BackgroundColor = backgroundColor;
+
+            Character = " ";
+            X = 0;
+            Y = 0;
+            ResetAfter = false;
+        }
+        
         public string Character { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public string ForegroundColor { get; set; }
         public string BackgroundColor { get; set; }
         public bool ResetAfter { get; set; }
+
+        public override string ToString() => $"{BackgroundColor}{ForegroundColor}{Character}{(ResetAfter?Style.Reset:"")}";
     }
 }
