@@ -8,6 +8,7 @@
         public const string Reset = "\u001b[0m";
         public const string Bold = "\u001b[1m";
         public const string Underline = "\u001b[4m";
+        public const string Blink = "\u001b[5m";
         public const string Inverse = "\u001b[7m";
         
         /// <summary>
@@ -48,14 +49,6 @@
             public const string Magenta = "\u001b[45m";
             public const string Cyan = "\u001b[46m";
             public const string White = "\u001b[47m";
-            public const string BrightBlack = "\u001b[40;1m";
-            public const string BrightRed = "\u001b[41;1m";
-            public const string BrightGreen = "\u001b[42;1m";
-            public const string BrightYellow = "\u001b[43;1m";
-            public const string BrightBlue = "\u001b[44;1m";
-            public const string BrightMagenta = "\u001b[45;1m";
-            public const string BrightCyan = "\u001b[46;1m";
-            public const string BrightWhite = "\u001b[47;1m";
 
             public const string Grayscale235 = "\u001b[48;5;235m";
             public const string Grayscale240 = "\u001b[48;5;240m";

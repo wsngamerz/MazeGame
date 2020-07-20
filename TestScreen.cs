@@ -89,7 +89,7 @@ namespace MazeGame
                 var fieldInfo = fields[i];
                 _screenBuffer.DrawText(fieldInfo.Name, 5, i + 5);
                 
-                var backgroundPixel = new Pixel(fieldInfo.GetValue(fieldInfo).ToString(), Style.ForegroundColor.White);
+                var backgroundPixel = new Pixel(fieldInfo.GetValue(fieldInfo)?.ToString(), Style.ForegroundColor.White);
                 _screenBuffer.DrawBox(backgroundPixel, 30, i+5, 30, 1);
             }
         }
@@ -108,7 +108,7 @@ namespace MazeGame
                 var fieldInfo = fields[i];
                 _screenBuffer.DrawText(fieldInfo.Name, 5, i + 5);
 
-                var foregroundPixel = new Pixel(Style.BackgroundColor.Black, fieldInfo.GetValue(fieldInfo).ToString());
+                var foregroundPixel = new Pixel(Style.BackgroundColor.Black, fieldInfo.GetValue(fieldInfo)?.ToString());
                 _screenBuffer.DrawText(foregroundPixel, "abcdefghijklmnopqrstuvwxyz", 30, i + 5);
             }
         }

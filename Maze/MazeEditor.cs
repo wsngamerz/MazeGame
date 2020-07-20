@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace MazeGame.Maze
 {
@@ -11,15 +13,23 @@ namespace MazeGame.Maze
         private int _mazeOffsetY;
 
         private Pixel[] _mapPixels;
-        
+
+        private bool _cursorEnabled;
         private int _cursorX;
         private int _cursorY;
+        private int _cursorSpeed;
         private Tuple<int, int, int, int> _cursorBoundaries;
         private Direction _cursorDirection;
         private Dictionary<Direction, Tuple<int, int>> _cursorDirectionDeltaMap;
 
         private MazeTileType _currentTileTool;
-        
+
+        private bool _isBackgroundColourSelector;
+        private int _currentBackgroundColour;
+        private int _currentForegroundColour;
+        private string[] _backgroundColours;
+        private string[] _foregroundColours;
+
         private Pixel _cursorPixel;
         private Pixel _blankMapPixel;
 
@@ -51,11 +61,16 @@ namespace MazeGame.Maze
         /// </summary>
         private void SetupMazeEditor(ScreenBuffer screenBuffer)
         {
-            // cursor properties
+            
+            // maze properties
             _mazeOffsetX = 1;
             _mazeOffsetY = 6;
+            
+            // cursor properties
+            _cursorEnabled = true;
             _cursorX = _mazeOffsetX;
             _cursorY = _mazeOffsetY;
+            _cursorSpeed = 1;
             _cursorDirection = Direction.Down;
             
             // trigger updates
@@ -74,12 +89,13 @@ namespace MazeGame.Maze
             };
 
             // pre-calculate ui outline strings
-            const int uiTopSplitA = 80;
+            const int uiTopSplitA = 72;
+            const int uiTopSplitB = 80;
             _uiOutline = new string[screenBuffer.BufferHeight];
             
-            string uiLineTop = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.TopCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.TopRight}";
-            string uiLineTopMiddle = $"{Character.Vertical}{Utils.Repeat(" ", uiTopSplitA)}{Character.Vertical}{Utils.Repeat(" ", screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.Vertical}";
-            string uiLineTopSplit = $"{Character.MiddleLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.BottomCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - 3)}{Character.MiddleRight}";
+            string uiLineTop = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.TopCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - uiTopSplitB - 4)}{Character.TopCentre}{Utils.Repeat(Character.Horizontal, uiTopSplitB)}{Character.TopRight}";
+            string uiLineTopMiddle = $"{Character.Vertical}{Utils.Repeat(" ", uiTopSplitA)}{Character.Vertical}{Utils.Repeat(" ", screenBuffer.BufferWidth - uiTopSplitA - uiTopSplitB - 4)}{Character.Vertical}{Utils.Repeat(" ", uiTopSplitB)}{Character.Vertical}";
+            string uiLineTopSplit = $"{Character.MiddleLeft}{Utils.Repeat(Character.Horizontal, uiTopSplitA)}{Character.BottomCentre}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - uiTopSplitA - uiTopSplitB - 4)}{Character.BottomCentre}{Utils.Repeat(Character.Horizontal, uiTopSplitB)}{Character.MiddleRight}";
             string uiLineMiddle = $"{Character.Vertical}{Utils.Repeat(" ", screenBuffer.BufferWidth - 2)}{Character.Vertical}";
             string uiLineBottom = $"{Character.BottomLeft}{Utils.Repeat(Character.Horizontal, screenBuffer.BufferWidth - 2)}{Character.BottomRight}";
             
@@ -115,6 +131,13 @@ namespace MazeGame.Maze
 
             // set the current pixel
             _currentTileTool = MazeTileType.None;
+            
+            // get the background colours
+            _isBackgroundColourSelector = true;
+            _currentBackgroundColour = 0;
+            _currentForegroundColour = 0;
+            _backgroundColours = typeof(Style.BackgroundColor).GetFields().Select(fi => fi.GetValue(fi)?.ToString()).ToArray();
+            _foregroundColours = typeof(Style.ForegroundColor).GetFields().Select(fi => fi.GetValue(fi)?.ToString()).ToArray();
         }
         
         /// <summary>
@@ -143,33 +166,65 @@ namespace MazeGame.Maze
                 // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                 switch (consoleKey)
                 {
-                    // Movement inputs
+                    /*
+                     * Cursor Movement
+                     */
                     case ConsoleKey.UpArrow:
+                        // only move if cursor enabled
+                        if (!_cursorEnabled) break;
+                        
                         MoveCursor(0, -1);
                         _cursorDirection = Direction.Up;
                         break;
                         
                     case ConsoleKey.DownArrow:
+                        // only move if cursor enabled
+                        if (!_cursorEnabled) break;
+                        
                         MoveCursor(0, 1);
                         _cursorDirection = Direction.Down;
                         break;
                         
                     case ConsoleKey.LeftArrow:
+                        // only move if cursor enabled
+                        if (!_cursorEnabled) break;
+                        
                         MoveCursor(-1, 0);
                         _cursorDirection = Direction.Left;
                         break;
                         
                     case ConsoleKey.RightArrow:
+                        // only move if cursor enabled
+                        if (!_cursorEnabled) break;
+                        
                         MoveCursor(1, 0);
                         _cursorDirection = Direction.Right;
                         break;
                         
-                    // Draw a pixel
+                    /*
+                     * Cursor Speed
+                     */
+                    case ConsoleKey.Add:
+                        ModifyCursorSpeed(+1);
+                        break;
+                    
+                    case ConsoleKey.Subtract:
+                        ModifyCursorSpeed(-1);
+                        break;
+                    
+                    /*
+                     * Draw a Map tile
+                     */
                     case ConsoleKey.Spacebar:
+                        // only draw if the cursor is enabled
+                        if (!_cursorEnabled) break;
+                        
                         DrawTile();
                         break;
                             
-                    // pixel selection
+                    /*
+                     * Map Tile Selection
+                     */
                     case ConsoleKey.D1:
                         _currentTileTool = MazeTileType.None;
                         break;
@@ -188,6 +243,36 @@ namespace MazeGame.Maze
                         
                     case ConsoleKey.D5:
                         _currentTileTool = MazeTileType.Player;
+                        break;
+
+                    /*
+                     * Colour selector
+                     */
+                    case ConsoleKey.Tab:
+                        CycleColourSelector();
+                        break;
+                    
+                    case ConsoleKey.Oem8:
+                        _isBackgroundColourSelector = !_isBackgroundColourSelector;
+                        break;
+                    
+                    /*
+                     * Debug Keys
+                     */
+                    
+                    // force resize
+                    case ConsoleKey.F1:
+                        _maze.ResizeMaze();
+                        
+                        // force the maze to be drawn
+                        _mazeUpdated = true;
+                        DrawMaze(screenBuffer);
+                        
+                        break;
+                    
+                    // Toggle Cursor Disabled
+                    case ConsoleKey.F2:
+                        _cursorEnabled = !_cursorEnabled;
                         break;
                 }
                 
@@ -211,6 +296,7 @@ namespace MazeGame.Maze
             DrawEditorUi(screenBuffer);
             DrawMaze(screenBuffer);
             DrawCursor(screenBuffer);
+            DrawColourSelector(screenBuffer);
             
             // display the screen buffer
             screenBuffer.Show();
@@ -225,10 +311,10 @@ namespace MazeGame.Maze
             // draw maze info
             string toolName = _currentTileTool == MazeTileType.None ? "Eraser" : $"{_currentTileTool}";
             
-            screenBuffer.DrawText($"Editing Maze: {_maze.Name}", 1, 1);
-            screenBuffer.DrawText($"Tile count: {_maze.Map.Count.ToString()}", 1, 2);
-            screenBuffer.DrawText($"Current Tool: {toolName}", 1, 3);
-            screenBuffer.DrawText("1 - Eraser : 2 - Wall : 3 - StartPos : 4 - FinishPos : 5 - PlayerPos", 1, 4);
+            screenBuffer.DrawText($"Editing Maze: {_maze.Name}", 2, 1);
+            screenBuffer.DrawText($"Tile count: {_maze.Map.Count.ToString()}", 2, 2);
+            screenBuffer.DrawText($"Current Tool: {toolName}", 2, 3);
+            screenBuffer.DrawText("1 - Eraser : 2 - Wall : 3 - StartPos : 4 - FinishPos : 5 - PlayerPos", 2, 4);
             
             // draw current tile info
             var currentTile = GetCursorMazeTile();
@@ -238,9 +324,12 @@ namespace MazeGame.Maze
                 currentTileName = currentTile.TileType.ToString();
             }
             
-            screenBuffer.DrawText($"Current tile: {currentTileName}", 82, 1);
-            screenBuffer.DrawText($"X: {(_cursorX - _mazeOffsetX).ToString()}", 82, 2);
-            screenBuffer.DrawText($"Y: {(_cursorY - _mazeOffsetY).ToString()}", 82, 3);
+            screenBuffer.DrawText($"Current tile: {currentTileName}", 75, 1);
+            screenBuffer.DrawText($"X: {(_cursorX - _mazeOffsetX).ToString()}", 75, 2);
+            screenBuffer.DrawText($"Y: {(_cursorY - _mazeOffsetY).ToString()}", 75, 3);
+            screenBuffer.DrawText($"Cursor speed: {_cursorSpeed.ToString()}", 75, 4);
+            
+            screenBuffer.DrawText(new Pixel(Style.ForegroundColor.White, _cursorEnabled ? Style.BackgroundColor.Green : Style.BackgroundColor.Red), $"Cursor {(_cursorEnabled ? "Enabled": "Disabled")}", 82, 2);
         }
 
         /// <summary>
@@ -257,7 +346,7 @@ namespace MazeGame.Maze
                 for (var i = 0; i < _mapPixels.Length; i++)
                 {
                     var mapTile = _maze.Map[i];
-                    _mapPixels[i] = new Pixel(mapTile.Char, mapTile.X + _mazeOffsetX, mapTile.Y + _mazeOffsetY, mapTile.ForegroundColour, mapTile.BackgroundColour, false);
+                    _mapPixels[i] = new Pixel(mapTile.Char, mapTile.X + _mazeOffsetX, mapTile.Y + _mazeOffsetY, mapTile.ForegroundColour, mapTile.BackgroundColour, true);
                 }    
             }
             
@@ -271,6 +360,9 @@ namespace MazeGame.Maze
         /// <param name="screenBuffer"></param>
         private void DrawCursor(ScreenBuffer screenBuffer)
         {
+            // only render if the cursor is enabled
+            if (!_cursorEnabled) return;
+            
             var tile = GetCursorMazeTile();
             
             // draw the cursor
@@ -280,6 +372,87 @@ namespace MazeGame.Maze
             
             screenBuffer.DrawPixel(_cursorPixel);
         }
+
+        /// <summary>
+        /// Draw the colour selector which relates to the currently selected tool
+        /// </summary>
+        /// <param name="screenBuffer"></param>
+        private void DrawColourSelector(ScreenBuffer screenBuffer)
+        {
+            // TODO: compare the selected colour indicator against background to check contrast
+            
+            if (_isBackgroundColourSelector)
+            {
+                screenBuffer.DrawText("Colour selector - Background", 100, 1);
+                
+                int itemsPerRow = (_backgroundColours.Length / 3);
+                var row = 0;
+                var index = 0;
+                foreach (string backgroundColour in _backgroundColours)
+                {
+                    if (index > itemsPerRow)
+                    {
+                        row++;
+                        index = 0;
+                    }
+                
+                    screenBuffer.DrawBox(new Pixel(Style.ForegroundColor.White, backgroundColour),
+                        100 + index * 3,
+                        2 + row,
+                        3,
+                        1);
+
+                    if (index + (row * itemsPerRow) + row == _currentBackgroundColour)
+                    {
+                        screenBuffer.DrawPixel(new Pixel(Character.SolidSquare, 101 + index * 3, 2 + row, Style.ForegroundColor.White, backgroundColour, true));
+                    }
+                
+                    index++;
+                }
+            }
+            else
+            {
+                screenBuffer.DrawText("Colour selector - Foreground", 100, 1);
+            
+                int itemsPerRow = (_foregroundColours.Length / 3);
+                var row = 0;
+                var index = 0;
+                foreach (string foregroundColour in _foregroundColours)
+                {
+                    if (index > itemsPerRow)
+                    {
+                        row++;
+                        index = 0;
+                    }
+            
+                    screenBuffer.DrawText(new Pixel(foregroundColour, Style.BackgroundColor.Black), Utils.Repeat(Character.SolidBlock, 3), 100 + index * 3, 2 + row);
+                    
+                    if (index + (row * itemsPerRow) + row == _currentForegroundColour)
+                    {
+                        screenBuffer.DrawPixel(new Pixel(Character.SolidSquare, 101 + index * 3, 2 + row, Style.ForegroundColor.White, Style.BackgroundColor.FromForeground(foregroundColour), true));
+                    }
+            
+                    index++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Cycles round the available colours
+        /// </summary>
+        private void CycleColourSelector()
+        {
+            if (_isBackgroundColourSelector)
+            {
+                _currentBackgroundColour++;
+                if (_currentBackgroundColour == _backgroundColours.Length) _currentBackgroundColour = 0;
+            }
+            else
+            {
+                _currentForegroundColour++;
+                if (_currentForegroundColour == _foregroundColours.Length) _currentForegroundColour = 0;
+            }
+        }
         
         /// <summary>
         /// Move the cursor and trigger an update
@@ -288,14 +461,26 @@ namespace MazeGame.Maze
         /// <param name="dy"></param>
         private void MoveCursor(int dx, int dy)
         {
-            int newCursorX = _cursorX + dx;
-            int newCursorY = _cursorY + dy;
+            int newCursorX = _cursorX + (dx * _cursorSpeed);
+            int newCursorY = _cursorY + (dy * _cursorSpeed);
 
             if (newCursorX > _cursorBoundaries.Item2 || newCursorX < _cursorBoundaries.Item1) return;
             if (newCursorY > _cursorBoundaries.Item4 || newCursorY < _cursorBoundaries.Item3) return;
 
             _cursorX = newCursorX;
             _cursorY = newCursorY;
+        }
+
+        /// <summary>
+        /// Change the speed of the cursor
+        /// </summary>
+        /// <param name="dv">the cursors velocity</param>
+        private void ModifyCursorSpeed(int dv)
+        {
+            // prevent going under 1
+            if (_cursorSpeed + dv < 1) return;
+            
+            _cursorSpeed += dv;
         }
 
         /// <summary>
@@ -313,6 +498,8 @@ namespace MazeGame.Maze
                 mapTile = MapTile.GetTile(_currentTileTool);
                 mapTile.X = _cursorX - _mazeOffsetX;
                 mapTile.Y = _cursorY - _mazeOffsetY;
+                mapTile.ForegroundColour = _foregroundColours[_currentForegroundColour];
+                mapTile.BackgroundColour = _backgroundColours[_currentBackgroundColour];
                 _maze.Map.Add(mapTile);
             }
             
@@ -336,7 +523,7 @@ namespace MazeGame.Maze
         /// <returns></returns>
         private MapTile GetCursorMazeTile()
         {
-            return _maze.Map.FirstOrDefault(mt => mt.X == _cursorX - _mazeOffsetX && mt.Y == _cursorY - _mazeOffsetY);
+            return _maze.Map.FirstOrDefault(mapTile => mapTile.X == _cursorX - _mazeOffsetX && mapTile.Y == _cursorY - _mazeOffsetY);
         }
     }
 

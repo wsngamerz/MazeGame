@@ -10,8 +10,8 @@ namespace MazeGame.Maze
         public abstract MazeTileType TileType { get; }
         public abstract bool IsStatic { get; }
         public abstract int Limit { get; }
-        public abstract string BackgroundColour { get; }
-        public abstract string ForegroundColour { get; }
+        public abstract string BackgroundColour { get; set; }
+        public abstract string ForegroundColour { get; set; }
 
         public static MapTile GetTile(MazeTileType mazeTileType)
         {
@@ -44,8 +44,8 @@ namespace MazeGame.Maze
         public override MazeTileType TileType => MazeTileType.None;
         public override bool IsStatic => true;
         public override int Limit => -1;
-        public override string BackgroundColour => Style.BackgroundColor.Grayscale235;
-        public override string ForegroundColour => Style.ForegroundColor.Grayscale235;
+        public override string BackgroundColour { get; set; }
+        public override string ForegroundColour { get; set; }
     }
     
     public class StartTile : MapTile
@@ -56,8 +56,8 @@ namespace MazeGame.Maze
         public override MazeTileType TileType => MazeTileType.Start;
         public override bool IsStatic => true;
         public override int Limit => 10;
-        public override string BackgroundColour => Style.BackgroundColor.Grayscale235;
-        public override string ForegroundColour => Style.ForegroundColor.BrightGreen;
+        public override string BackgroundColour { get; set; }
+        public override string ForegroundColour { get; set; }
     }
 
     public class FinishTile : MapTile
@@ -68,8 +68,8 @@ namespace MazeGame.Maze
         public override MazeTileType TileType => MazeTileType.Finish;
         public override bool IsStatic => true;
         public override int Limit => 10;
-        public override string BackgroundColour => Style.BackgroundColor.Grayscale235;
-        public override string ForegroundColour => Style.ForegroundColor.BrightRed;
+        public override string BackgroundColour { get; set; }
+        public override string ForegroundColour { get; set; }
     }
 
     public class PlayerTile : MapTile
@@ -80,8 +80,8 @@ namespace MazeGame.Maze
         public override MazeTileType TileType => MazeTileType.Player;
         public override bool IsStatic => false;
         public override int Limit => 1;
-        public override string BackgroundColour => Style.BackgroundColor.Grayscale235;
-        public override string ForegroundColour => Style.ForegroundColor.Yellow;
+        public override string BackgroundColour { get; set; }
+        public override string ForegroundColour { get; set; }
     }
     
     public class WallTile : MapTile
@@ -92,7 +92,7 @@ namespace MazeGame.Maze
         public override MazeTileType TileType => MazeTileType.Wall;
         public override bool IsStatic => true;
         public override int Limit => -1;
-        public override string BackgroundColour => Style.BackgroundColor.Grayscale235;
-        public override string ForegroundColour => Style.ForegroundColor.White;
+        public override string BackgroundColour { get; set; }
+        public override string ForegroundColour { get; set; }
     }
 }
