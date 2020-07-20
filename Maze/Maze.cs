@@ -12,8 +12,9 @@ namespace MazeGame.Maze
         public int Height;
         public readonly List<MapTile> Map;
 
-        public Maze(int width, int height)
+        public Maze(string name, int width, int height)
         {
+            Name = name;
             Width = width;
             Height = height;
             Map = new List<MapTile>();

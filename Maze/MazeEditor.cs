@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,15 +34,14 @@ namespace MazeGame.Maze
         /// <param name="mazeName"></param>
         public MazeEditor(string mazeName)
         {
-            _maze = new global::MazeGame.Maze.Maze(10, 10);
-            _maze.Name = mazeName;
+            _maze = new Maze(mazeName, 10, 10);
         }
 
         /// <summary>
         /// Maze editor editing an existing maze
         /// </summary>
         /// <param name="maze"></param>
-        public MazeEditor(global::MazeGame.Maze.Maze maze)
+        public MazeEditor(Maze maze)
         {
             _maze = maze;
         }
