@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -31,6 +32,9 @@ namespace MazeGame
             // set the window and the buffer size to be the same to disable the scrollbar
             Console.SetWindowSize(ApplicationWidth, ApplicationHeight);
             Console.SetBufferSize(ApplicationWidth, ApplicationHeight);
+
+            // create directory if it doesn't exist
+            if (!Directory.Exists("mazes")) Directory.CreateDirectory("mazes");
             
             // start the actual game
             var mazeGame = new MazeGame();
