@@ -59,6 +59,9 @@ namespace MazeGame
                 
                 _screenBuffer.ClearBuffer();
             }
+            
+            // go back to the main menu
+            new MazeGame().Start();
         }
 
         /// <summary>

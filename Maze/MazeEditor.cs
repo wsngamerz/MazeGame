@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
+using MazeGame.UI.Menu;
 
 namespace MazeGame.Maze
 {
@@ -37,6 +36,10 @@ namespace MazeGame.Maze
         
         private bool _isEditorRunning;
         private bool _mazeUpdated;
+
+        private Menu _fileMenu;
+        private Menu _editMenu;
+        private Menu _debugMenu;
         
         /// <summary>
         /// Maze editor with creating a new maze
@@ -138,6 +141,42 @@ namespace MazeGame.Maze
             _currentForegroundColour = 0;
             _backgroundColours = typeof(Style.BackgroundColor).GetFields().Select(fi => fi.GetValue(fi)?.ToString()).ToArray();
             _foregroundColours = typeof(Style.ForegroundColor).GetFields().Select(fi => fi.GetValue(fi)?.ToString()).ToArray();
+            
+            /*
+             * Setup menus
+             */
+            
+            // file menu
+            _fileMenu = new Menu("File Menu");
+            _fileMenu.AddItem("Save", (sb) => { _maze.Save(); _fileMenu.Enabled = false; });
+            _fileMenu.AddItem("Rename");
+            _fileMenu.AddItem("Close File Menu", (sb) => _fileMenu.Enabled = false);
+            _fileMenu.AddItem("Exit to main menu", (sb) => { new MazeGame().Start(); /* basically a hacky way to restart */ });
+            
+            // edit menu
+            _editMenu = new Menu("Edit Menu");
+            _editMenu.AddItem("Eraser Tool", (sb) => { _currentTileTool = MazeTileType.None; _editMenu.Enabled = false; });
+            _editMenu.AddItem("Wall Tool", (sb) => { _currentTileTool = MazeTileType.Wall; _editMenu.Enabled = false; });
+            _editMenu.AddItem("Start Tool", (sb) => { _currentTileTool = MazeTileType.Start; _editMenu.Enabled = false; });
+            _editMenu.AddItem("Finish Tool", (sb) => { _currentTileTool = MazeTileType.Finish; _editMenu.Enabled = false; });
+            _editMenu.AddItem("Player Spawn Tool", (sb) => { _currentTileTool = MazeTileType.Player; _editMenu.Enabled = false; });
+            _editMenu.AddItem("Close Edit Menu", (sb) => _editMenu.Enabled = false);
+            
+            // debug menu
+            _debugMenu = new Menu("Debug Menu");
+            _debugMenu.AddItem("Shrink maze size", (sb) =>
+            {
+                _maze.ResizeMaze();
+                
+                // force the maze to be drawn
+                _mazeUpdated = true;
+                DrawMaze(screenBuffer);
+                _debugMenu.Enabled = false; // close the menu after execution
+            });
+            
+            _debugMenu.AddItem("Toggle cursor", (sb) => { _cursorEnabled = !_cursorEnabled; _debugMenu.Enabled = false; });
+            _debugMenu.AddItem("Close Debug Menu", (sb) => _debugMenu.Enabled = false);
+            
         }
         
         /// <summary>
@@ -257,26 +296,22 @@ namespace MazeGame.Maze
                         break;
                     
                     /*
-                     * Debug Keys
+                     * Menus
                      */
                     
-                    // force resize
+                    // File menu
                     case ConsoleKey.F1:
-                        _maze.ResizeMaze();
-                        
-                        // force the maze to be drawn
-                        _mazeUpdated = true;
-                        DrawMaze(screenBuffer);
-                        
+                        _fileMenu.Show(screenBuffer);
                         break;
                     
-                    // Toggle Cursor Disabled
+                    // Edit menu
                     case ConsoleKey.F2:
-                        _cursorEnabled = !_cursorEnabled;
+                        _editMenu.Show(screenBuffer);
                         break;
                     
+                    // Debug Menu
                     case ConsoleKey.F3:
-                        _maze.Save();
+                        _debugMenu.Show(screenBuffer);
                         break;
                 }
                 
@@ -318,7 +353,7 @@ namespace MazeGame.Maze
             screenBuffer.DrawText($"Editing Maze: {_maze.Name}", 2, 1);
             screenBuffer.DrawText($"Tile count: {_maze.Map.Count.ToString()}", 2, 2);
             screenBuffer.DrawText($"Current Tool: {toolName}", 2, 3);
-            screenBuffer.DrawText("1 - Eraser : 2 - Wall : 3 - StartPos : 4 - FinishPos : 5 - PlayerPos", 2, 4);
+            screenBuffer.DrawText("F1: File - F2: Edit - F3: Debug", 2, 4);
             
             // draw current tile info
             var currentTile = GetCursorMazeTile();

@@ -9,10 +9,11 @@ namespace MazeGame.UI.Menu
         private readonly string _menuTitle;
         
         private int _selectedItem = 0;
-        private bool _isRunning = false;
         private bool _updateNeeded = true;
         private int _menuWidth;
-        
+
+        public bool Enabled { get; set; } = false;
+
         // padding each side
         private const int MenuPadding = 2;
         private const int MenuTextPadding = 4;
@@ -97,9 +98,9 @@ namespace MazeGame.UI.Menu
         /// <param name="screenBuffer">the screen buffer to use</param>
         public void Show(ScreenBuffer screenBuffer)
         {
-            _isRunning = true;
+            Enabled = true;
 
-            while (_isRunning)
+            while (Enabled)
             {
                 if (_updateNeeded)
                 {
@@ -208,7 +209,7 @@ namespace MazeGame.UI.Menu
         {
             if (!_menuItems[_selectedItem].HasCallback) return;
             
-            _isRunning = false;
+            Enabled = false;
             _updateNeeded = true;
 
             screenBuffer.ClearBuffer();
