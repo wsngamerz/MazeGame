@@ -1,30 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MazeGame.Maze
 {
     /// <summary>
     /// The maze data class
     /// </summary>
+    [Serializable]
     public class Maze
     {
-        public string Name;
+        public string ID;
+        public readonly string Name;
         public int Width;
         public int Height;
         public List<MapTile> Map;
 
-        public Maze(string name, int width, int height)
+        public Maze(string name)
         {
+            ID = Guid.NewGuid().ToString();
             Name = name;
-            Width = width;
-            Height = height;
             Map = new List<MapTile>();
+
+            if (string.IsNullOrWhiteSpace(Name)) Name = ID;
         }
 
+        /// <summary>
+        /// Save the maze
+        /// </summary>
         public void Save()
         {
+            if (!Directory.Exists("mazes")) Directory.CreateDirectory("mazes");
             
+            var binaryFormatter = new BinaryFormatter();
+            var fileStream = File.Create($"mazes/{ID}.maze");
+            binaryFormatter.Serialize(fileStream, this);
+            fileStream.Close();
         }
 
         /// <summary>

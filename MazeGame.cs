@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
 using MazeGame.Maze;
 using MazeGame.UI.Menu;
 
@@ -6,15 +10,15 @@ namespace MazeGame
 {
     public class MazeGame
     {
-        private const string Version = "0.0.1.0 ALPHA";
-        private static readonly string[] MenuLogo = new[]
-        {
+        private const string Version = "0.0.0.1 PROTOTYPE";
+        private static readonly string[] MenuLogo = {
             "███╗   ███╗ █████╗ ███████╗███████╗      ██████╗  █████╗ ███╗   ███╗███████╗",
             "████╗ ████║██╔══██╗╚══███╔╝██╔════╝     ██╔════╝ ██╔══██╗████╗ ████║██╔════╝",
             "██╔████╔██║███████║  ███╔╝ █████╗       ██║  ███╗███████║██╔████╔██║█████╗  ",
             "██║╚██╔╝██║██╔══██║ ███╔╝  ██╔══╝       ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ",
             "██║ ╚═╝ ██║██║  ██║███████╗███████╗     ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗",
-            "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝"
+            "╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝",
+            "                                                      A fun little prototype"
         };
         
         private readonly ScreenBuffer _screenBuffer = new ScreenBuffer();
@@ -25,9 +29,14 @@ namespace MazeGame
         private readonly Menu _editorMenu = new Menu("Editor");
         private readonly Menu _optionsMenu = new Menu("Options");
         
+        private readonly Menu _editMazeMenu = new Menu("Edit Maze");
+        
         // Sections of the game
         private MazeEditor _mazeEditor;
         private MazePlayer _mazePlayer;
+        
+        // temp state variables
+        private string _editMazePath;
 
         /// <summary>
         /// Main maze game class
@@ -69,7 +78,7 @@ namespace MazeGame
         private void SetupEditorMenu()
         {
             _editorMenu.AddItem("Create new Maze", CreateNewMazeScreen);
-            _editorMenu.AddItem("Edit Maze");
+            _editorMenu.AddItem("Edit Maze", EditMazeScreen);
             _editorMenu.AddItem(new MenuItem("Back", _mainMenu));
         }
 
@@ -118,14 +127,76 @@ namespace MazeGame
             screenBuffer.ClearBuffer();
             
             // TODO: Add a user input for the name of a maze
-            var mazeName = Guid.NewGuid().ToString();
             
             // create a new maze editor with a new maze
             // and show it
-            _mazeEditor = new MazeEditor(mazeName);
+            _mazeEditor = new MazeEditor("");
             _mazeEditor.Show(screenBuffer);
         }
 
+        private void EditMazeScreen(ScreenBuffer screenBuffer)
+        {
+            // clear the buffer
+            screenBuffer.ClearBuffer();
+            
+            // list of (mazename, filepath) pairs
+            var mazes = new List<Tuple<string, string>>();
+            
+            // get all existing mazes
+            foreach (string filepath in Directory.GetFiles("mazes"))
+            {
+                // rudimentary check to see whether this is indeed a maze file
+                if (!filepath.EndsWith(".maze")) continue;
+                
+                var fileStream = File.OpenRead(filepath);
+                var binaryFormatter = new BinaryFormatter();
+                var importedMaze = (Maze.Maze) binaryFormatter.Deserialize(fileStream);
+                    
+                mazes.Add(new Tuple<string, string>(importedMaze.Name, filepath));
+                    
+                fileStream.Dispose();
+                fileStream.Close();
+            }
+
+            // remove all existing items
+            _editMazeMenu.ClearItems();
+            _editMazePath = "";
+            
+            // populate menu with items
+            foreach ((string mazeName, string mazeFilePath) in mazes)
+            {
+                _editMazeMenu.AddItem(mazeName, sb =>
+                {
+                    _editMazePath = mazeFilePath;
+                    EditExistingMaze(sb);
+                });
+            }
+            
+            // dont forget the all important back button
+            _editMazeMenu.AddItem("Back", _editorMenu);
+            
+            // display the menu
+            _editMazeMenu.Show(screenBuffer);
+        }
+
+        private void EditExistingMaze(ScreenBuffer screenBuffer)
+        {
+            // load the maze from the file
+            var fileStream = File.OpenRead(_editMazePath);
+            var binaryFormatter = new BinaryFormatter();
+            var mazeToEdit = (Maze.Maze) binaryFormatter.Deserialize(fileStream);
+            fileStream.Dispose();
+            fileStream.Close();
+            
+            // stop the existing rendering
+            screenBuffer.ClearRenderQueue();
+            screenBuffer.ClearBuffer();
+            
+            // load the editor with that maze
+            _mazeEditor = new MazeEditor(mazeToEdit);
+            _mazeEditor.Show(screenBuffer);
+        }
+        
         /// <summary>
         /// quit the game
         /// </summary>

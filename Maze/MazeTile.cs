@@ -2,6 +2,7 @@
 
 namespace MazeGame.Maze
 {
+    [Serializable]
     public abstract class MapTile
     {
         public abstract string Char { get; }
@@ -36,6 +37,9 @@ namespace MazeGame.Maze
         Wall
     }
 
+    // TODO: Set default foreground and background colours and use them to override the current colour selected
+    
+    [Serializable]
     public class MazeTile : MapTile
     {
         public override string Char => " ";
@@ -48,6 +52,7 @@ namespace MazeGame.Maze
         public override string ForegroundColour { get; set; }
     }
     
+    [Serializable]
     public class StartTile : MapTile
     {
         public override string Char => Character.MediumBlock;
@@ -60,6 +65,7 @@ namespace MazeGame.Maze
         public override string ForegroundColour { get; set; }
     }
 
+    [Serializable]
     public class FinishTile : MapTile
     {
         public override string Char => Character.LightBlock;
@@ -72,6 +78,7 @@ namespace MazeGame.Maze
         public override string ForegroundColour { get; set; }
     }
 
+    [Serializable]
     public class PlayerTile : MapTile
     {
         public override string Char => Character.SolidSquare;
@@ -84,6 +91,7 @@ namespace MazeGame.Maze
         public override string ForegroundColour { get; set; }
     }
     
+    [Serializable]
     public class WallTile : MapTile
     {
         public override string Char => Character.SolidBlock;

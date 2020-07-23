@@ -82,6 +82,16 @@ namespace MazeGame.UI.Menu
         }
 
         /// <summary>
+        /// remove all items from the menu
+        /// </summary>
+        public void ClearItems()
+        {
+            _menuItems.Clear();
+            _menuWidth = 0;
+            _selectedItem = 0;
+        }
+        
+        /// <summary>
         /// Triggers the menu to be drawn
         /// </summary>
         /// <param name="screenBuffer">the screen buffer to use</param>

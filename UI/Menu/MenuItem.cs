@@ -1,5 +1,8 @@
 ﻿namespace MazeGame.UI.Menu
 {
+    /// <summary>
+    /// an item displayed in a menu
+    /// </summary>
     public class MenuItem
     {
         private readonly MenuCallback _menuCallback;
@@ -23,11 +26,19 @@
             _menuCallback = menu.Show;
         }
 
+        /// <summary>
+        /// Called when the menu item is selected
+        /// </summary>
+        /// <param name="screenBuffer"></param>
         public void Select(ScreenBuffer screenBuffer)
         {
             _menuCallback?.Invoke(screenBuffer);
         }
     }
 
+    /// <summary>
+    /// called when the menu item os selected
+    /// </summary>
+    /// <param name="screenBuffer"></param>
     public delegate void MenuCallback(ScreenBuffer screenBuffer);
 }

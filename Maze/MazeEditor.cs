@@ -44,7 +44,7 @@ namespace MazeGame.Maze
         /// <param name="mazeName"></param>
         public MazeEditor(string mazeName)
         {
-            _maze = new Maze(mazeName, 10, 10);
+            _maze = new Maze(mazeName);
         }
 
         /// <summary>
@@ -273,6 +273,10 @@ namespace MazeGame.Maze
                     // Toggle Cursor Disabled
                     case ConsoleKey.F2:
                         _cursorEnabled = !_cursorEnabled;
+                        break;
+                    
+                    case ConsoleKey.F3:
+                        _maze.Save();
                         break;
                 }
                 
