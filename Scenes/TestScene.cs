@@ -5,6 +5,9 @@ namespace MazeGame.Scenes
 {
     public class TestScene : Scene
     {
+        /// <summary>
+        /// the test scene
+        /// </summary>
         public TestScene()
         {
             var testSceneLabel = new Label("Test scene", Vector2.Zero);

@@ -7,16 +7,23 @@ namespace MazeGame.Scenes
 {
     public class MainMenuScene : Scene
     {
+        // menus
         private Menu _mainMenu;
         private Menu _playMenu;
         private Menu _editorMenu;
         private Menu _optionsMenu;
         
+        /// <summary>
+        /// Main menu scene
+        /// </summary>
         public MainMenuScene()
         {
             AddMenus();
         }
 
+        /// <summary>
+        /// add all of the main menus
+        /// </summary>
         private void AddMenus()
         {
             // main menu
@@ -46,6 +53,9 @@ namespace MazeGame.Scenes
             AddRenderObject(_mainMenu);
         }
 
+        /// <summary>
+        /// display the play menu and hide the main menu
+        /// </summary>
         private void DisplayPlayMenu()
         {
             RemoveRenderObject(_mainMenu);
@@ -53,29 +63,45 @@ namespace MazeGame.Scenes
             Debug.WriteLine("Play option selected");
         }
 
+        /// <summary>
+        /// display the editor menu and hide the main menu
+        /// </summary>
         private void DisplayEditorMenu()
         {
             RemoveRenderObject(_mainMenu);
             AddRenderObject(_editorMenu);
         }
 
+        /// <summary>
+        /// display the options menu and hide the main menu
+        /// </summary>
         private void DisplayOptionsMenu()
         {
             RemoveRenderObject(_mainMenu);
             AddRenderObject(_optionsMenu);
         }
 
+        /// <summary>
+        /// display the main menu and hide the previous menu
+        /// </summary>
+        /// <param name="previousMenu"></param>
         private void DisplayMainMenu(Menu previousMenu)
         {
             RemoveRenderObject(previousMenu);
             AddRenderObject(_mainMenu);
         }
 
+        /// <summary>
+        /// switch scenes to the test scene
+        /// </summary>
         private void SwitchTestScene()
         {
             Display.SwitchScene("testScene");
         }
         
+        /// <summary>
+        /// exit the application
+        /// </summary>
         private void QuitCallback()
         {
             Environment.Exit(0);
