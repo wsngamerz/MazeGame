@@ -1,8 +1,9 @@
-﻿namespace MazeGame
+﻿using System;
+using System.Linq;
+using System.Reflection;
+
+namespace MazeGame.Engine
 {
-    /// <summary>
-    /// Holds all the ansi escape codes for styling text and their colours
-    /// </summary>
     public static class Style
     {
         public const string Reset = "\u001b[0m";
@@ -11,9 +12,6 @@
         public const string Blink = "\u001b[5m";
         public const string Inverse = "\u001b[7m";
         
-        /// <summary>
-        /// Foreground Colours
-        /// </summary>
         public static class ForegroundColor
         {
             public const string Black = "\u001b[30m";
@@ -34,11 +32,21 @@
             public const string BrightWhite = "\u001b[37;1m";
 
             public const string Grayscale235 = "\u001b[38;5;235m";
+            public const string Grayscale240 = "\u001b[38;5;240m";
+            public const string Grayscale245 = "\u001b[38;5;245m";
+            public const string Grayscale250 = "\u001b[38;5;250m";
+
+            public static string FromBackground(string backgroundColour)
+            {
+                return backgroundColour.Replace("[4", "[3");
+            }
+
+            public static string FromString(string foregroundColourName)
+            {
+                return typeof(ForegroundColor).GetFields().Where(f => f.Name == foregroundColourName).Select(f => f.GetValue(f)?.ToString()).FirstOrDefault() ?? White;
+            }
         }
 
-        /// <summary>
-        /// background colours
-        /// </summary>
         public static class BackgroundColor
         {
             public const string Black = "\u001b[40m";
@@ -55,14 +63,14 @@
             public const string Grayscale245 = "\u001b[48;5;245m";
             public const string Grayscale250 = "\u001b[48;5;250m";
 
-            /// <summary>
-            /// convert a foreground colour code to a background colour code
-            /// </summary>
-            /// <param name="foregroundColour"></param>
-            /// <returns></returns>
             public static string FromForeground(string foregroundColour)
             {
                 return foregroundColour.Replace("[3", "[4");
+            }
+            
+            public static string FromString(string backgroundColourName)
+            {
+                return typeof(BackgroundColor).GetFields().Where(f => f.Name == backgroundColourName).Select(f => f.GetValue(f)?.ToString()).FirstOrDefault() ?? Black;
             }
         }
     }

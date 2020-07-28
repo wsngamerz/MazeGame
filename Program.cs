@@ -2,14 +2,15 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using MazeGame.Engine;
+using MazeGame.Scenes;
 
 namespace MazeGame
 {
     internal static class Program
     {
-        private const int ApplicationWidth = 180;
-        private const int ApplicationHeight = 50;
-
+        private static Display _display;
+        
         /// <summary>
         /// Entry-point into the application
         ///
@@ -28,17 +29,15 @@ namespace MazeGame
             // disable the cursor visibility
             Console.CursorVisible = false;
             Console.OutputEncoding = Encoding.Default;
-            
-            // set the window and the buffer size to be the same to disable the scrollbar
-            Console.SetWindowSize(ApplicationWidth, ApplicationHeight);
-            Console.SetBufferSize(ApplicationWidth, ApplicationHeight);
 
             // create directory if it doesn't exist
             if (!Directory.Exists("mazes")) Directory.CreateDirectory("mazes");
             
-            // start the actual game
-            var mazeGame = new MazeGame();
-            mazeGame.Start();
+            // setup the display
+            _display = new Display();
+            _display.AddScene(new MainMenuScene(), "mainMenuScene");
+            _display.AddScene(new TestScene(), "testScene");
+            _display.StartRendering();
         }
     }
 }
