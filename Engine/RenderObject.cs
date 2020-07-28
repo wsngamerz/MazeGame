@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MazeGame.Engine
+﻿namespace MazeGame.Engine
 {
+    /// <summary>
+    /// Abstract RenderObject class which all objects inherit from
+    /// </summary>
     public abstract class RenderObject
     {
         /// <summary>

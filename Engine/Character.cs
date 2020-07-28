@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-
-namespace MazeGame.Engine
+﻿namespace MazeGame.Engine
 {
+    /// <summary>
+    /// All the characters used to draw to the screen
+    /// </summary>
     public static class Character
     {
         public const char Empty = ' ';

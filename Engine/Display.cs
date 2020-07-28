@@ -7,24 +7,41 @@ using System.Threading;
 
 namespace MazeGame.Engine
 {
+    /// <summary>
+    /// The display class that handles drawing all of the scenes and their render objects content to the screen. Also
+    /// handles passing inputs to each scene.
+    /// </summary>
     public class Display
     {
         public List<Scene> Scenes;
         public Scene CurrentScene;
-
+        
+        // a rudimentary FPS Limit
         public const int Fps = 10;
+        
+        // the current size of the display
         public int Width;
         public int Height;
 
+        // frame arrays that are used to compare to see whether we actually need to draw
         private string[] _currentFrame;
         private string[] _prevFrame;
 
+        /// <summary>
+        /// Create the display object
+        /// </summary>
         public Display()
         {
+            // cre
             Scenes = new List<Scene>();
             PopulateFrame();
         }
         
+        /// <summary>
+        /// Add a scene for the display to manage
+        /// </summary>
+        /// <param name="scene"></param>
+        /// <param name="sceneName"></param>
         public void AddScene(Scene scene, string sceneName)
         {
             scene.Display = this; // attach display to the scene
@@ -33,6 +50,10 @@ namespace MazeGame.Engine
             Scenes.Add(scene);
         }
 
+        /// <summary>
+        /// Set the current scene
+        /// </summary>
+        /// <param name="scene"></param>
         public void SetScene(Scene scene)
         {
             if (!Scenes.Contains(scene)) return;
@@ -40,15 +61,18 @@ namespace MazeGame.Engine
             CurrentScene = scene;
         }
 
+        /// <summary>
+        /// Switch from a scene to another scene
+        /// </summary>
+        /// <param name="nextSceneName"></param>
         public void SwitchScene(string nextSceneName)
         {
-            var newScene = Scenes.FirstOrDefault(s => s.Name == nextSceneName);
-            if (newScene != null)
-            {
-                CurrentScene = newScene;
-            }
+            SetScene(Scenes.FirstOrDefault(s => s.Name == nextSceneName));
         }
         
+        /// <summary>
+        /// Handle a change in size of the console or setup the initial values
+        /// </summary>
         private void SetupSize()
         {
             Width = Console.WindowWidth;
@@ -58,6 +82,9 @@ namespace MazeGame.Engine
             Debug.WriteLine($"Setting display size to ({Width}, {Height})");
         }
 
+        /// <summary>
+        /// populates a 1d string array with blank values for a blank frame
+        /// </summary>
         private void PopulateFrame()
         {
             _currentFrame = new string[Height];
@@ -67,9 +94,12 @@ namespace MazeGame.Engine
             }
         }
         
+        /// <summary>
+        /// Draw a frame
+        /// </summary>
         private void Draw()
         {
-            // create updateinfo object
+            // create updateInfo object
             var updateInfo = new UpdateInfo()
             {
                 PressedKeys = new List<ConsoleKey>(),
@@ -89,6 +119,7 @@ namespace MazeGame.Engine
             PopulateFrame();
 
             // update and render each object
+            // TODO: Order by the render objects Z-Index
             foreach (var renderObject in CurrentScene.SceneObjects)
             {
                 // call update and render on each object
@@ -116,10 +147,14 @@ namespace MazeGame.Engine
             Console.Write(string.Join("", _currentFrame));
         }
 
+        /// <summary>
+        /// Start rendering for the application. This is basically the main game loop
+        /// </summary>
         public void StartRendering()
         {
             var drawTimer = new Stopwatch();
             
+            // TODO: Add some end clause to break out of the loop to perform shutdown tasks rather than just quitting the application
             while (true)
             {
                 // call the draw method and time it

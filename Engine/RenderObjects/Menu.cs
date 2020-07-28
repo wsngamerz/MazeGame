@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace MazeGame.Engine.RenderObjects
 {
+    /// <summary>
+    /// A menu render object
+    /// </summary>
     public class Menu : RenderObject
     {
         private readonly List<MenuItem> _menuItems;
