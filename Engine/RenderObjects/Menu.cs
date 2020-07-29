@@ -40,6 +40,7 @@ namespace MazeGame.Engine.RenderObjects
             Size = Vector2.Zero;
             Position = Vector2.Zero;
             Enabled = true;
+            ZIndex = 10;
         }
 
         /// <summary>

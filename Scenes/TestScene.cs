@@ -11,9 +11,10 @@ namespace MazeGame.Scenes
         /// </summary>
         public TestScene()
         {
-            var testSceneLabel = new Label("Test scene", Vector2.Zero);
+            var testSceneLabel = new Label("Test scene", Vector2.One);
             testSceneLabel.SetBackgroundColour(Style.BackgroundColor.Grayscale240);
             testSceneLabel.SetForegroundColour(Style.ForegroundColor.White);
+            AddRenderObject(new Border());
             AddRenderObject(testSceneLabel);
             AddRenderObject(new Image("main_menu_logo.json", new Vector2(10, 5)));
         }

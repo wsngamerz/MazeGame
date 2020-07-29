@@ -11,7 +11,8 @@ namespace MazeGame.Scenes
     {
         public MazePlayerScene()
         {
-            AddRenderObject(new Label("Maze player scene", Vector2.Zero));
+            AddRenderObject(new Border());
+            AddRenderObject(new Label("Maze player scene", Vector2.One));
         }
         
         /// <summary>

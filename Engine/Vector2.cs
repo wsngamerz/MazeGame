@@ -27,6 +27,11 @@ namespace MazeGame.Engine
         /// A Zero Vector2
         /// </summary>
         public static readonly Vector2 Zero = new Vector2(0, 0);
+        
+        /// <summary>
+        /// A One One Vector2
+        /// </summary>
+        public static readonly Vector2 One = new Vector2(1, 1);
 
         /// <summary>
         /// Convert a vector2 object to a string representation

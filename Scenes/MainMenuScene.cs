@@ -20,6 +20,8 @@ namespace MazeGame.Scenes
         public MainMenuScene()
         {
             AddMenus();
+            
+            AddRenderObject(new Border());
         }
 
         /// <summary>

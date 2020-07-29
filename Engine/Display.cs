@@ -37,7 +37,7 @@ namespace MazeGame.Engine
             // cre
             Scenes = new List<Scene>();
             _isRendering = true;
-            PopulateFrame();
+            _currentFrame = PopulateFrame();
         }
         
         /// <summary>
@@ -88,13 +88,15 @@ namespace MazeGame.Engine
         /// <summary>
         /// populates a 1d string array with blank values for a blank frame
         /// </summary>
-        private void PopulateFrame()
+        public string[] PopulateFrame()
         {
-            _currentFrame = new string[Height];
-            for (var i = 0; i < _currentFrame.Length; i++)
+            var newFrame = new string[Height];
+            for (var i = 0; i < newFrame.Length; i++)
             {
-                _currentFrame[i] = new string(' ', Width);
+                newFrame[i] = new string(' ', Width);
             }
+
+            return newFrame;
         }
         
         /// <summary>
@@ -119,22 +121,35 @@ namespace MazeGame.Engine
             _prevFrame = _currentFrame;
             
             // create an empty new frame
-            PopulateFrame();
+            _currentFrame = PopulateFrame();
 
             // trigger an update and a render of the current scene
             CurrentScene.Update(updateInfo);
             CurrentScene.Render();
             
             // get the renders for all the objects and combine into 1 2d array
-            foreach (var renderObject in CurrentScene.SceneObjects.OrderByDescending(s => s.ZIndex))
+            foreach (var renderObject in CurrentScene.SceneObjects.OrderBy(s => s.ZIndex))
             {
                 // iterate through each line of the render
                 for (var dy = 0; dy < renderObject.Content.Length; dy++)
                 {
                     // use substrings to remove the required amount of space and fill it with the content
-                    _currentFrame[renderObject.Position.Y + dy] = _currentFrame[renderObject.Position.Y + dy]
-                        .Remove(renderObject.Position.X, Regex.Replace(renderObject.Content[dy], "\\u001b[^m]*m", "").Length)
-                        .Insert(renderObject.Position.X, renderObject.Content[dy]);
+                    try
+                    {
+                        _currentFrame[renderObject.Position.Y + dy] = _currentFrame[renderObject.Position.Y + dy]
+                            .Remove(renderObject.Position.X,
+                                Regex.Replace(renderObject.Content[dy], "\\u001b[^m]*m", "").Length)
+                            .Insert(renderObject.Position.X, renderObject.Content[dy]);
+                    }
+                    catch (Exception e)
+                    {
+                        // exceptions that will be thrown if resize console mid-draw. These can be safely skipped
+                        // furthermore, if a render object is too large to fir on screen, that will also trigger this
+                        if (e is IndexOutOfRangeException || e is ArgumentOutOfRangeException) continue;
+                        
+                        // throw if any other exception happens
+                        throw;
+                    }
                 }
             }
             
