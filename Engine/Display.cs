@@ -57,10 +57,9 @@ namespace MazeGame.Engine
         /// Set the current scene
         /// </summary>
         /// <param name="scene"></param>
-        public void SetScene(Scene scene)
+        private void SetScene(Scene scene)
         {
             if (!Scenes.Contains(scene)) return;
-
             CurrentScene = scene;
         }
 
@@ -71,6 +70,12 @@ namespace MazeGame.Engine
         public void SwitchScene(string nextSceneName)
         {
             SetScene(Scenes.FirstOrDefault(s => s.Name == nextSceneName));
+
+            // trigger the scene start method so it can initialise
+            if (CurrentScene.Started) return;
+            
+            CurrentScene.Start();
+            CurrentScene.Started = true;
         }
         
         /// <summary>
@@ -168,11 +173,13 @@ namespace MazeGame.Engine
         /// <summary>
         /// Start rendering for the application. This is basically the main game loop
         /// </summary>
-        public void StartRendering()
+        public void StartRendering(string startingScene)
         {
+            // because this will be the first loop, trigger the start method for the current scene manually
+            SwitchScene(startingScene);
+            
             var drawTimer = new Stopwatch();
             
-            // TODO: Add some end clause to break out of the loop to perform shutdown tasks rather than just quitting the application
             while (_isRendering)
             {
                 // call the draw method and time it

@@ -13,14 +13,13 @@ namespace MazeGame.Scenes
         private Menu _playMenu;
         private Menu _editorMenu;
         private Menu _optionsMenu;
-        
+
         /// <summary>
-        /// Main menu scene
+        /// Scene start method
         /// </summary>
-        public MainMenuScene()
+        public override void Start()
         {
             AddMenus();
-            
             AddRenderObject(new Border());
         }
 
@@ -30,6 +29,10 @@ namespace MazeGame.Scenes
         /// <param name="updateInfo"></param>
         public override void Update(UpdateInfo updateInfo)
         {
+            // back to main menu on escape
+            if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+            
+            // update all components
             foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
                 renderObject.Update(updateInfo);
         }

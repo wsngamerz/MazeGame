@@ -35,13 +35,13 @@ namespace MazeGame
             
             // setup the display
             _display = new Display();
-            _display.AddScene(new MainMenuScene(), "mainMenuScene"); // first scene added will be the current scene
+            _display.AddScene(new MainMenuScene(), "mainMenu");
             _display.AddScene(new TestScene(), "testScene");
             _display.AddScene(new MazePlayerScene(), "mazePlayer");
             _display.AddScene(new MazeEditorScene(), "mazeEditor");
             
             // start rendering the first scene
-            _display.StartRendering();
+            _display.StartRendering("mainMenu");
         }
     }
 }

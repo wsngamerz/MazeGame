@@ -7,6 +7,7 @@ namespace MazeGame.Engine
         public List<RenderObject> SceneObjects = new List<RenderObject>();
         public Display Display { get; set; }
         public string Name { get; set; }
+        public bool Started { get; set; }
 
         private List<RenderObject> _objectsToAdd = new List<RenderObject>();
         private List<RenderObject> _objectsToRemove = new List<RenderObject>();
@@ -30,6 +31,11 @@ namespace MazeGame.Engine
             _objectsToAdd.ForEach(o => SceneObjects.Add(o));
             _objectsToAdd.Clear();
         }
+
+        /// <summary>
+        /// Scene start method. Called when the scene is first loaded
+        /// </summary>
+        public abstract void Start();
 
         /// <summary>
         /// Scene update method
