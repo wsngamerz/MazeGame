@@ -18,6 +18,7 @@
         {
             Text = text;
             Position = position;
+            Enabled = true;
             Size = new Vector2(text.Length, 1);
         }
 

@@ -10,6 +10,11 @@ namespace MazeGame.Engine.RenderObjects
         private readonly Stopwatch _fpsTimer = Stopwatch.StartNew();
         private int _numberUpdates;
         private double _averageFps;
+
+        public FpsTimer()
+        {
+            Enabled = true;
+        }
         
         /// <summary>
         /// update method

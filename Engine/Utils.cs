@@ -35,6 +35,12 @@ namespace MazeGame.Engine
             return new StringBuilder(value.Length * count).Insert(0, value, count).ToString();
         }
 
+        /// <summary>
+        /// Repeats a character a set number of times
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public static string Repeat(char value, int count)
         {
             return Repeat(value.ToString(), count);

@@ -8,7 +8,14 @@ namespace MazeGame.Engine
     /// </summary>
     public struct UpdateInfo
     {
+        /// <summary>
+        /// A list of the keys that were pressed between update calls
+        /// </summary>
         public List<ConsoleKey> PressedKeys { get; set; }
+        
+        /// <summary>
+        /// Whether the console has been resized between update calls
+        /// </summary>
         public bool HasResized { get; set; }
     }
 }

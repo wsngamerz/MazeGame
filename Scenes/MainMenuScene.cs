@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using MazeGame.Engine;
 using MazeGame.Engine.RenderObjects;
 
@@ -22,6 +23,25 @@ namespace MazeGame.Scenes
         }
 
         /// <summary>
+        /// Scene update method
+        /// </summary>
+        /// <param name="updateInfo"></param>
+        public override void Update(UpdateInfo updateInfo)
+        {
+            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
+                renderObject.Update(updateInfo);
+        }
+
+        /// <summary>
+        /// Scene render method
+        /// </summary>
+        public override void Render()
+        {
+            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
+                renderObject.Render();
+        }
+        
+        /// <summary>
         /// add all of the main menus
         /// </summary>
         private void AddMenus()
@@ -40,13 +60,13 @@ namespace MazeGame.Scenes
             
             // editor menu
             _editorMenu = new Menu("Editor");
-            _editorMenu.AddItem("Create new Maze");
+            _editorMenu.AddItem("Create new Maze", () => Display.SwitchScene("mazeEditor"));
             _editorMenu.AddItem("Edit maze");
             _editorMenu.AddItem("Back", () => DisplayMainMenu(_editorMenu));
             
             // options menu
             _optionsMenu = new Menu("Options");
-            _optionsMenu.AddItem("Test Scene", SwitchTestScene);
+            _optionsMenu.AddItem("Test Scene", () => Display.SwitchScene("testScene"));
             _optionsMenu.AddItem("Back", () => DisplayMainMenu(_optionsMenu));
             
             // add the main menu as the starting menu
@@ -90,21 +110,13 @@ namespace MazeGame.Scenes
             RemoveRenderObject(previousMenu);
             AddRenderObject(_mainMenu);
         }
-
-        /// <summary>
-        /// switch scenes to the test scene
-        /// </summary>
-        private void SwitchTestScene()
-        {
-            Display.SwitchScene("testScene");
-        }
         
         /// <summary>
         /// exit the application
         /// </summary>
         private void QuitCallback()
         {
-            Environment.Exit(0);
+            Display.StopRendering();
         }
     }
 }

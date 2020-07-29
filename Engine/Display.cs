@@ -27,6 +27,8 @@ namespace MazeGame.Engine
         private string[] _currentFrame;
         private string[] _prevFrame;
 
+        private bool _isRendering;
+
         /// <summary>
         /// Create the display object
         /// </summary>
@@ -34,6 +36,7 @@ namespace MazeGame.Engine
         {
             // cre
             Scenes = new List<Scene>();
+            _isRendering = true;
             PopulateFrame();
         }
         
@@ -118,17 +121,17 @@ namespace MazeGame.Engine
             // create an empty new frame
             PopulateFrame();
 
-            // update and render each object
-            // TODO: Order by the render objects Z-Index
-            foreach (var renderObject in CurrentScene.SceneObjects)
+            // trigger an update and a render of the current scene
+            CurrentScene.Update(updateInfo);
+            CurrentScene.Render();
+            
+            // get the renders for all the objects and combine into 1 2d array
+            foreach (var renderObject in CurrentScene.SceneObjects.OrderByDescending(s => s.ZIndex))
             {
-                // call update and render on each object
-                renderObject.Update(updateInfo);
-                renderObject.Render();
-                
-                // get the renders for all the objects and combine into 1 2d array
+                // iterate through each line of the render
                 for (var dy = 0; dy < renderObject.Content.Length; dy++)
                 {
+                    // use substrings to remove the required amount of space and fill it with the content
                     _currentFrame[renderObject.Position.Y + dy] = _currentFrame[renderObject.Position.Y + dy]
                         .Remove(renderObject.Position.X, Regex.Replace(renderObject.Content[dy], "\\u001b[^m]*m", "").Length)
                         .Insert(renderObject.Position.X, renderObject.Content[dy]);
@@ -155,24 +158,30 @@ namespace MazeGame.Engine
             var drawTimer = new Stopwatch();
             
             // TODO: Add some end clause to break out of the loop to perform shutdown tasks rather than just quitting the application
-            while (true)
+            while (_isRendering)
             {
                 // call the draw method and time it
                 drawTimer.Restart();
                 Draw();
                 drawTimer.Stop();
                 
-                // calculate the time taken to draw this "frame"
+                // calculate the approximate time taken to draw this "frame"
                 float freeTime = (1000f / Fps) - drawTimer.ElapsedMilliseconds;
-                if (freeTime >= 0)
-                {
-                    Thread.Sleep((int) freeTime);
-                }
-                else
-                {
-                    Debug.WriteLine($"Running behind by {Convert.ToString(-freeTime)}ms");
-                }
+                
+                // sleep the current thread if we have enough remaining time to keep the framerate constant
+                if (freeTime >= 0) Thread.Sleep((int) freeTime);
+                else Debug.WriteLine($"Running behind by {Convert.ToString(-freeTime)}ms");
             }
+        }
+
+        /// <summary>
+        /// Called on shutdown
+        /// </summary>
+        public void StopRendering()
+        {
+            _isRendering = false;
+            Debug.WriteLine("Application shutting down");
+            Environment.Exit(0);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace MazeGame.Engine.RenderObjects
         {
             _hasRendered = false;
             Position = position;
+            Enabled = true;
             LoadDataFile(dataFilePath);
         }
 

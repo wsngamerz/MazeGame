@@ -4,18 +4,14 @@ using MazeGame.Engine.RenderObjects;
 
 namespace MazeGame.Scenes
 {
-    public class TestScene : Scene
+    /// <summary>
+    /// Maze player scene
+    /// </summary>
+    public class MazePlayerScene : Scene
     {
-        /// <summary>
-        /// the test scene
-        /// </summary>
-        public TestScene()
+        public MazePlayerScene()
         {
-            var testSceneLabel = new Label("Test scene", Vector2.Zero);
-            testSceneLabel.SetBackgroundColour(Style.BackgroundColor.Grayscale240);
-            testSceneLabel.SetForegroundColour(Style.ForegroundColor.White);
-            AddRenderObject(testSceneLabel);
-            AddRenderObject(new Image("main_menu_logo.json", new Vector2(10, 5)));
+            AddRenderObject(new Label("Maze player scene", Vector2.Zero));
         }
         
         /// <summary>
@@ -29,7 +25,7 @@ namespace MazeGame.Scenes
         }
 
         /// <summary>
-        /// Scene render method
+        /// Scene render method`
         /// </summary>
         public override void Render()
         {

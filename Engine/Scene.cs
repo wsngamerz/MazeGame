@@ -2,7 +2,7 @@
 
 namespace MazeGame.Engine
 {
-    public class Scene
+    public abstract class Scene
     {
         public List<RenderObject> SceneObjects = new List<RenderObject>();
         public Display Display { get; set; }
@@ -30,5 +30,15 @@ namespace MazeGame.Engine
             _objectsToAdd.ForEach(o => SceneObjects.Add(o));
             _objectsToAdd.Clear();
         }
+
+        /// <summary>
+        /// Scene update method
+        /// </summary>
+        public abstract void Update(UpdateInfo updateInfo);
+
+        /// <summary>
+        /// Scene render method
+        /// </summary>
+        public abstract void Render();
     }
 }
