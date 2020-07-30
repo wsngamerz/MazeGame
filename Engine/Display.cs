@@ -71,11 +71,17 @@ namespace MazeGame.Engine
         {
             SetScene(Scenes.FirstOrDefault(s => s.Name == nextSceneName));
 
-            // trigger the scene start method so it can initialise
-            if (CurrentScene.Started) return;
-            
-            CurrentScene.Start();
-            CurrentScene.Started = true;
+            if (CurrentScene.Started)
+            {
+                // trigger the restart method if the scene has previously started
+                CurrentScene.Restart();
+            }
+            else
+            {
+                // otherwise start the scene for the first time
+                CurrentScene.Start();
+                CurrentScene.Started = true;
+            }
         }
         
         /// <summary>

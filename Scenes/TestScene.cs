@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MazeGame.Engine;
 using MazeGame.Engine.RenderObjects;
 
@@ -12,6 +11,8 @@ namespace MazeGame.Scenes
         /// </summary>
         public override void Start()
         {
+            base.Start();
+            
             var testSceneLabel = new Label("Test scene", Vector2.One);
             testSceneLabel.SetBackgroundColour(Style.BackgroundColor.Grayscale240);
             testSceneLabel.SetForegroundColour(Style.ForegroundColor.White);
@@ -27,21 +28,10 @@ namespace MazeGame.Scenes
         /// <param name="updateInfo"></param>
         public override void Update(UpdateInfo updateInfo)
         {
+            base.Update(updateInfo);
+            
             // back to main menu
             if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
-            
-            // update all components
-            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Update(updateInfo);
-        }
-
-        /// <summary>
-        /// Scene render method
-        /// </summary>
-        public override void Render()
-        {
-            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Render();
         }
     }
 }

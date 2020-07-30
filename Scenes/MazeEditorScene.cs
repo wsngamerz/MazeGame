@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using MazeGame.Engine;
 using MazeGame.Engine.RenderObjects;
 
@@ -15,7 +14,14 @@ namespace MazeGame.Scenes
         /// </summary>
         public override void Start()
         {
-            AddRenderObject(new Border());
+            base.Start();
+            
+            var borderSections = new[]
+            {
+                new BorderSection(Vector2.One, new Vector2(Display.Width, 6)),
+            };
+            
+            AddRenderObject(new Border(borderSections));
             AddRenderObject(new Label("Maze editor scene", Vector2.One));
         }
 
@@ -25,21 +31,10 @@ namespace MazeGame.Scenes
         /// <param name="updateInfo"></param>
         public override void Update(UpdateInfo updateInfo)
         {
+            base.Update(updateInfo);
+            
             // back to main menu
             if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
-            
-            // update all components
-            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Update(updateInfo);
-        }
-
-        /// <summary>
-        /// Scene render method
-        /// </summary>
-        public override void Render()
-        {
-            foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Render();
         }
     }
 }

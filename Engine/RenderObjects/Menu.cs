@@ -35,12 +35,13 @@ namespace MazeGame.Engine.RenderObjects
             _menuItems = new List<MenuItem>();
             _menuTitle = menuTitle;
             _menuContentWidth = _menuTitle.Length;
-            _shouldRender = true;
             
             Size = Vector2.Zero;
             Position = Vector2.Zero;
             Enabled = true;
             ZIndex = 10;
+            
+            Reset();
         }
 
         /// <summary>
@@ -61,6 +62,15 @@ namespace MazeGame.Engine.RenderObjects
         public void AddItem(string itemText, MenuCallback menuCallback = null)
         {
             AddItem(new MenuItem(itemText, menuCallback));
+        }
+
+        /// <summary>
+        /// Reset values of the menu to their initial values such as the selected index
+        /// </summary>
+        public void Reset()
+        {
+            _selectedItem = 0;
+            _shouldRender = true;
         }
 
         /// <summary>
