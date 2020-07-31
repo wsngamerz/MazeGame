@@ -34,5 +34,10 @@
         /// <param name="dx"></param>
         /// <param name="dy"></param>
         public BorderSection(int x, int y, int dx, int dy) : this(new Vector2(x, y), new Vector2(dx, dy)) { }
+
+        public override string ToString()
+        {
+            return $"BorderSection(x: {Position.X} y: {Position.Y} w: {Size.X} h: {Size.Y})";
+        }
     }
 }

@@ -53,5 +53,27 @@ namespace MazeGame.Engine
         {
             return HashCode.Combine(X, Y);
         }
+        
+        /// <summary>
+        /// Add operator for Vector2's
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static Vector2 operator+ (Vector2 a, Vector2 b)
+        {
+            return new Vector2(a.X + b.X, a.Y + b.Y);
+        }
+
+        /// <summary>
+        /// Subtract operator for Vector2's
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static Vector2 operator -(Vector2 a, Vector2 b)
+        {
+            return new Vector2(a.X - b.X, a.Y - b.Y);
+        }
     }
 }

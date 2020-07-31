@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -6,25 +7,37 @@ namespace MazeGame.Engine
 {
     public class Scene
     {
-        public List<RenderObject> SceneObjects = new List<RenderObject>();
+        public readonly List<RenderObject> SceneObjects = new List<RenderObject>();
         public Display Display { get; set; }
         public string Name { get; set; }
         public bool Started { get; set; }
 
-        private List<RenderObject> _objectsToAdd = new List<RenderObject>();
-        private List<RenderObject> _objectsToRemove = new List<RenderObject>();
+        private readonly List<RenderObject> _objectsToAdd = new List<RenderObject>();
+        private readonly List<RenderObject> _objectsToRemove = new List<RenderObject>();
 
+        /// <summary>
+        /// Add a render object to the scene objects
+        /// </summary>
+        /// <param name="renderObject"></param>
         protected void AddRenderObject(RenderObject renderObject)
         {
             renderObject.Scene = this;
             _objectsToAdd.Add(renderObject);
         }
 
+        /// <summary>
+        /// Remove a render object from the scene objects
+        /// </summary>
+        /// <param name="renderObject"></param>
         protected void RemoveRenderObject(RenderObject renderObject)
         {
             _objectsToRemove.Add(renderObject);
         }
 
+        /// <summary>
+        /// Apply the additions and removals of render objects all in one go after an update and a render so they will
+        /// be reflected next frame and not cause any side effects mid-render / mid-update.
+        /// </summary>
         public void ApplySceneChanges()
         {
             _objectsToRemove.ForEach(o => SceneObjects.Remove(o));
@@ -57,7 +70,18 @@ namespace MazeGame.Engine
         {
             // update all components
             foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Update(updateInfo);
+            {
+                try
+                {
+                    renderObject.Update(updateInfo);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Exception whilst updating: {renderObject} -> {e.Message}");
+                    Debug.WriteLine(e.StackTrace);
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -67,7 +91,18 @@ namespace MazeGame.Engine
         {
             // render all components
             foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
-                renderObject.Render();
+            {
+                try
+                {
+                    renderObject.Render();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Exception whilst rendering: {renderObject} -> {e.Message}");
+                    Debug.WriteLine(e.StackTrace);
+                    throw;
+                }
+            }
         }
     }
 }

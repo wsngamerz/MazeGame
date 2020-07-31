@@ -9,6 +9,8 @@ namespace MazeGame.Scenes
     /// </summary>
     public class MazeEditorScene : Scene
     {
+        private Border _editorBorder;
+        
         /// <summary>
         /// scene start method
         /// </summary>
@@ -18,10 +20,13 @@ namespace MazeGame.Scenes
             
             var borderSections = new[]
             {
-                new BorderSection(Vector2.One, new Vector2(Display.Width, 6)),
+                new BorderSection(Vector2.Zero, new Vector2((Display.Width - 1) / 2, 6)),
+                new BorderSection(((Display.Width - 1) / 2) - 1, 0, (Display.Width - (Display.Width - 1) / 2) + 1, 6) 
             };
+
+            _editorBorder = new Border(borderSections);
             
-            AddRenderObject(new Border(borderSections));
+            AddRenderObject(_editorBorder);
             AddRenderObject(new Label("Maze editor scene", Vector2.One));
         }
 
@@ -35,6 +40,12 @@ namespace MazeGame.Scenes
             
             // back to main menu
             if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+
+            // re-calculate sizes for the border information
+            if (!updateInfo.HasResized) return;
+            _editorBorder.BorderSections[0].Size = new Vector2((Display.Width - 1) / 2, 6);
+            _editorBorder.BorderSections[1].Position = new Vector2(((Display.Width - 1) / 2) - 1, 0);
+            _editorBorder.BorderSections[1].Size = new Vector2((Display.Width - (Display.Width - 1) / 2) + 1, 6);
         }
     }
 }
