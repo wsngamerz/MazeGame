@@ -17,7 +17,7 @@ namespace MazeGame.Engine
         public Scene CurrentScene;
         
         // a rudimentary FPS Limit
-        public const int Fps = 10;
+        public const int Fps = 20;
         
         // the current size of the display
         public int Width;

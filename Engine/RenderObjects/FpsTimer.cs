@@ -11,8 +11,9 @@ namespace MazeGame.Engine.RenderObjects
         private int _numberUpdates;
         private double _averageFps;
 
-        public FpsTimer()
+        public FpsTimer(Vector2 pos)
         {
+            Position = pos;
             Enabled = true;
         }
         

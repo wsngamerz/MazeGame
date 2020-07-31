@@ -14,11 +14,12 @@ namespace MazeGame.Scenes
         {
             base.Start();
             
-            var testSceneLabel = new Label("Test scene", Vector2.One);
+            var testSceneLabel = new Label("Test scene", new Vector2(12, 1));
             testSceneLabel.SetBackgroundColour(Style.BackgroundColor.Grayscale240);
             testSceneLabel.SetForegroundColour(Style.ForegroundColor.White);
-            AddRenderObject(testSceneLabel);
             
+            AddRenderObject(new FpsTimer(Vector2.One));
+            AddRenderObject(testSceneLabel);
             AddRenderObject(new Border());
             AddRenderObject(new Image("main_menu_logo.json", new Vector2(1, 3)));
             AddRenderObject(new TextInput("test input box", new Vector2(1, 13)));
