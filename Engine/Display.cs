@@ -118,7 +118,7 @@ namespace MazeGame.Engine
             // create updateInfo object
             var updateInfo = new UpdateInfo()
             {
-                PressedKeys = new List<ConsoleKey>(),
+                PressedKeys = new List<ConsoleKeyInfo>(),
                 HasResized = Width != Console.WindowWidth || Height != Console.WindowHeight
             };
 
@@ -126,7 +126,7 @@ namespace MazeGame.Engine
             if (updateInfo.HasResized) SetupSize();
             
             // get all keys pressed
-            while (Console.KeyAvailable) updateInfo.PressedKeys.Add(Console.ReadKey(true).Key);
+            while (Console.KeyAvailable) updateInfo.PressedKeys.Add(Console.ReadKey(true));
 
             // move the frame of last draw to prev
             _prevFrame = _currentFrame;

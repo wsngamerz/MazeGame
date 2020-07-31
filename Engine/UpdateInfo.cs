@@ -11,7 +11,7 @@ namespace MazeGame.Engine
         /// <summary>
         /// A list of the keys that were pressed between update calls
         /// </summary>
-        public List<ConsoleKey> PressedKeys { get; set; }
+        public List<ConsoleKeyInfo> PressedKeys { get; set; }
         
         /// <summary>
         /// Whether the console has been resized between update calls

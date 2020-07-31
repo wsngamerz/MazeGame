@@ -49,7 +49,7 @@ namespace MazeGame.Scenes
             base.Update(updateInfo);
             
             // back to main menu on escape
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
         }
 
         /// <summary>

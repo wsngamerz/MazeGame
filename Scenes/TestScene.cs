@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MazeGame.Engine;
 using MazeGame.Engine.RenderObjects;
 
@@ -19,7 +20,8 @@ namespace MazeGame.Scenes
             AddRenderObject(testSceneLabel);
             
             AddRenderObject(new Border());
-            AddRenderObject(new Image("main_menu_logo.json", new Vector2(10, 5)));
+            AddRenderObject(new Image("main_menu_logo.json", new Vector2(1, 3)));
+            AddRenderObject(new TextInput("test input box", new Vector2(1, 13)));
         }
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace MazeGame.Scenes
             base.Update(updateInfo);
             
             // back to main menu
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using MazeGame.Engine;
 using MazeGame.Engine.RenderObjects;
 
@@ -39,7 +40,7 @@ namespace MazeGame.Scenes
             base.Update(updateInfo);
             
             // back to main menu
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
 
             // re-calculate sizes for the border information
             if (!updateInfo.HasResized) return;

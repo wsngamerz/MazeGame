@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace MazeGame.Engine.RenderObjects
@@ -122,9 +123,9 @@ namespace MazeGame.Engine.RenderObjects
         {
             // check whether any of the keys have been pressed
             // Advantage of only checking whether they exist means only being called once
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.DownArrow)) MoveDown();
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.UpArrow)) MoveUp();
-            if (updateInfo.PressedKeys.Contains(ConsoleKey.Enter)) SelectItem();
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.DownArrow)) MoveDown();
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.UpArrow)) MoveUp();
+            if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.Enter)) SelectItem();
             
             // check for a resize or initial value so that we know we need to calculate some new sizes and positions
             if (updateInfo.HasResized || Size.Equals(Vector2.Zero)) CalculateSizes();
