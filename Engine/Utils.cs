@@ -45,5 +45,17 @@ namespace MazeGame.Engine
         {
             return Repeat(value.ToString(), count);
         }
+
+        /// <summary>
+        /// Return the last n characters of a string or the string if it's shorter than the number of characters
+        /// requested
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="characters"></param>
+        /// <returns></returns>
+        public static string LastNCharacters(string value, int characters)
+        {
+            return characters > value.Length ? value : value.Substring(value.Length - characters);
+        }
     }
 }

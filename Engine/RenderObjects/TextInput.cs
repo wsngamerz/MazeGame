@@ -43,7 +43,6 @@ namespace MazeGame.Engine.RenderObjects
         /// the update method
         /// </summary>
         /// <param name="updateInfo"></param>
-        /// <exception cref="NotImplementedException"></exception>
         public override void Update(UpdateInfo updateInfo)
         {
             foreach (var consoleKeyInfo in updateInfo.PressedKeys)
@@ -85,9 +84,8 @@ namespace MazeGame.Engine.RenderObjects
         public override void Render()
         {
             // the displayed value also contains the cursor
-            // TODO: Handle text being bigger than the box
-            string inputPadding = Utils.Repeat(Character.Empty, InputWidth - (2 * InputPadding) - 1 - Value.Length);
-            string dVal = $"{Value}{(_isCursorDisplayed ? Style.ForegroundColor.White : Style.ForegroundColor.FromBackground(InpBgColour))}{Character.SolidBlock}{inputPadding}";
+            string inputPadding = Utils.Repeat(Character.Empty, Math.Clamp(InputWidth - (2 * InputPadding) - 1 - Value.Length, 0, InputWidth));
+            string dVal = $"{Utils.LastNCharacters(Value, InputWidth - (2 * InputPadding) - 1)}{(_isCursorDisplayed ? Style.ForegroundColor.White : Style.ForegroundColor.FromBackground(InpBgColour))}{Character.SolidBlock}{inputPadding}";
             
             // a padding string that only needs to be calculated once
             string padding = Utils.Repeat(Character.Empty, InputPadding);
