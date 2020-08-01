@@ -41,13 +41,10 @@
         }
 
         /// <summary>
-        /// an update method which isnt used as a label cannot (yet) be updated
+        /// an update method which isnt used as a label
         /// </summary>
         /// <param name="updateInfo"></param>
-        public override void Update(UpdateInfo updateInfo)
-        {
-            // TODO: Implement updating the contents of a label
-        }
+        public override void Update(UpdateInfo updateInfo) { }
 
         /// <summary>
         /// the render method of the label

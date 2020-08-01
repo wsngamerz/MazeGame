@@ -29,6 +29,7 @@ namespace MazeGame.Engine.RenderObjects
             Position = position;
             Enabled = true;
             LoadDataFile(dataFilePath);
+            Size = new Vector2(_imageData.Width, _imageData.Height);
         }
 
         /// <summary>

@@ -71,16 +71,17 @@ namespace MazeGame.Engine
             // update all components
             foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
             {
-                try
-                {
+                // NOTE: Disabled error catching so that i can actually see the error properly in my IDE
+                // try
+                // {
                     renderObject.Update(updateInfo);
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine($"Exception whilst updating: {renderObject} -> {e.Message}");
-                    Debug.WriteLine(e.StackTrace);
-                    throw;
-                }
+                // }
+                // catch (Exception e)
+                // {
+                //     Debug.WriteLine($"Exception whilst updating: {renderObject} -> {e.Message}");
+                //     Debug.WriteLine(e.StackTrace);
+                //     throw;
+                // }
             }
         }
 
@@ -92,16 +93,17 @@ namespace MazeGame.Engine
             // render all components
             foreach (var renderObject in SceneObjects.Where(renderObject => renderObject.Enabled))
             {
-                try
-                {
+                // NOTE: Disabled error catching so that i can actually see the error properly in my IDE
+                // try
+                // {
                     renderObject.Render();
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine($"Exception whilst rendering: {renderObject} -> {e.Message}");
-                    Debug.WriteLine(e.StackTrace);
-                    throw;
-                }
+                // }
+                // catch (Exception e)
+                // {
+                //     Debug.WriteLine($"Exception whilst rendering: {renderObject} -> {e.Message}");
+                //     Debug.WriteLine(e.StackTrace);
+                //     throw;
+                // }
             }
         }
     }

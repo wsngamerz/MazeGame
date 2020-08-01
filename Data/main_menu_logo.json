@@ -5,8 +5,7 @@
   "ForegroundColour": "0",
   "BackgroundColour": "1",
   "Colours": [
-    "Cyan",
-    "Grayscale235"
+    "Grayscale250",
+    "Black"
   ]
 }
-

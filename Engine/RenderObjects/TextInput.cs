@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace MazeGame.Engine.RenderObjects
 {
@@ -9,6 +8,8 @@ namespace MazeGame.Engine.RenderObjects
     public class TextInput : RenderObject
     {
         public string Value { get; set; }
+        
+        public TextInputOnSubmit OnSubmit { get; set; }
 
         public string InputTitle { get; set; }
         
@@ -16,8 +17,8 @@ namespace MazeGame.Engine.RenderObjects
         private const string InpBgColour = Style.BackgroundColor.Grayscale235;
         private const string FgColour = Style.ForegroundColor.White;
 
-        private const int InputWidth = 40;
-        private const int InputPadding = 3;
+        public const int InputWidth = 40;
+        public const int InputPadding = 3;
         private const int CurChangePerSec = 2;
 
         private readonly int _cursorDisplayLoop;
@@ -29,14 +30,12 @@ namespace MazeGame.Engine.RenderObjects
             InputTitle = inputTitle;
             Position = pos;
 
+            Value = "";
             Enabled = true;
             
             _isCursorDisplayed = true;
             _currentCursorLoop = 0;
             _cursorDisplayLoop = Display.Fps / CurChangePerSec; // display 2 times per second
-            
-            // DEV: sf
-            Value = "tmp";
         }
         
         /// <summary>
@@ -64,7 +63,8 @@ namespace MazeGame.Engine.RenderObjects
                         break;
                     
                     case ConsoleKey.Enter:
-                        // TODO: handle text input submit
+                        // call the submit handler if it exists with the value of the textbox
+                        OnSubmit?.Invoke(Value);
                         break;
                 }
             }
@@ -80,7 +80,6 @@ namespace MazeGame.Engine.RenderObjects
         /// <summary>
         /// the render method
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
         public override void Render()
         {
             // the displayed value also contains the cursor
@@ -106,4 +105,6 @@ namespace MazeGame.Engine.RenderObjects
             };
         }
     }
+
+    public delegate void TextInputOnSubmit(string value);
 }

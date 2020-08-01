@@ -14,6 +14,9 @@ namespace MazeGame.Scenes
         private Menu _editorMenu;
         private Menu _optionsMenu;
 
+        private Image _mainLogo;
+        private bool _logoPositioned;
+
         /// <summary>
         /// Scene start method
         /// </summary>
@@ -22,6 +25,7 @@ namespace MazeGame.Scenes
             base.Start();
             
             AddMenus();
+            AddLogo();
             AddRenderObject(new Border());
         }
 
@@ -50,6 +54,20 @@ namespace MazeGame.Scenes
             
             // back to main menu on escape
             if (updateInfo.PressedKeys.Select(pk => pk.Key).Contains(ConsoleKey.Escape)) Display.SwitchScene("mainMenu");
+
+            if (_logoPositioned && !updateInfo.HasResized) return;
+            _mainLogo.Position = new Vector2((Display.Width / 2) - (_mainLogo.Size.X / 2),1);
+            _logoPositioned = true;
+        }
+
+        /// <summary>
+        /// Add the logo
+        /// </summary>
+        private void AddLogo()
+        {
+            _mainLogo = new Image("main_menu_logo.json", Vector2.Zero);
+            AddRenderObject(_mainLogo);
+            _logoPositioned = false;
         }
 
         /// <summary>
@@ -71,7 +89,7 @@ namespace MazeGame.Scenes
             
             // editor menu
             _editorMenu = new Menu("Editor");
-            _editorMenu.AddItem("Create new Maze", () => Display.SwitchScene("mazeEditor"));
+            _editorMenu.AddItem("Create new Maze", CreateNewMaze);
             _editorMenu.AddItem("Edit maze");
             _editorMenu.AddItem("Back", () => SwitchMenus(_editorMenu, _mainMenu));
             
@@ -96,6 +114,34 @@ namespace MazeGame.Scenes
             // reset the menu to its initial values before render
             nextMenu.Reset();
             AddRenderObject(nextMenu);
+        }
+
+        /// <summary>
+        /// Called when the "Create new maze" option is selected
+        /// asks for user input and then switches scenes to the maze editor
+        /// </summary>
+        private void CreateNewMaze()
+        {
+            // stop rendering the editor menu
+            RemoveRenderObject(_editorMenu);
+
+            // calculate the position of where to draw the input box
+            var nameInputPos = new Vector2((Display.Width/2) - (TextInput.InputWidth/2), (Display.Height / 2) - 3);
+            
+            // text input with a submit handler
+            var nameInput = new TextInput("New Maze Name", nameInputPos)
+            {
+                OnSubmit = (value) =>
+                {
+                    // switch to the mazeEditorScene and pass it the name of the new maze
+                    Display.SwitchScene("mazeEditor");
+                    var scene = (MazeEditorScene) Display.CurrentScene;
+                    scene.MazeName = value;
+                }
+            };
+            
+            // render the object
+            AddRenderObject(nameInput);
         }
 
         /// <summary>
