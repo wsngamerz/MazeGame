@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 using MazeGame.Engine;
 
 namespace MazeGame.RenderObjects

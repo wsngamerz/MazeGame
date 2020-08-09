@@ -1,4 +1,6 @@
-﻿namespace MazeGame.Engine
+﻿using System.Numerics;
+
+namespace MazeGame.Engine
 {
     /// <summary>
     /// Abstract RenderObject class which all objects inherit from

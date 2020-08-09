@@ -147,10 +147,10 @@ namespace MazeGame.Engine
                     // use substrings to remove the required amount of space and fill it with the content
                     try
                     {
-                        _currentFrame[renderObject.Position.Y + dy] = _currentFrame[renderObject.Position.Y + dy]
-                            .Remove(renderObject.Position.X,
+                        _currentFrame[(int) (renderObject.Position.Y + dy)] = _currentFrame[(int) (renderObject.Position.Y + dy)]
+                            .Remove((int) renderObject.Position.X,
                                 Regex.Replace(renderObject.Content[dy], "\\u001b[^m]*m", "").Length)
-                            .Insert(renderObject.Position.X, renderObject.Content[dy]);
+                            .Insert((int) renderObject.Position.X, renderObject.Content[dy]);
                     }
                     catch (Exception e)
                     {

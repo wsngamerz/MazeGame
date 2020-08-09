@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Numerics;
 using MazeGame.Engine;
 using Newtonsoft.Json;
 

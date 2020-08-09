@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using MazeGame.Engine;
 
 namespace MazeGame.RenderObjects
@@ -142,16 +143,16 @@ namespace MazeGame.RenderObjects
             if (!_shouldRender) return;
 
             // blank string array for new the render
-            var render = new string[Size.Y];
+            var render = new string[(int) Size.Y];
             
             // render blank box
-            string blankLine = $"{MenuBg}{Utils.Repeat(Character.Empty, Size.X)}{Style.Reset}"; 
+            string blankLine = $"{MenuBg}{Utils.Repeat(Character.Empty, (int) Size.X)}{Style.Reset}"; 
             render[0] = blankLine;
             render[2] = blankLine;
-            render[Size.Y - 1] = blankLine;
+            render[(int) (Size.Y - 1)] = blankLine;
             
             // add menu title
-            render[1] = $"{MenuBg}{MenuFg}{Utils.CenterText(_menuTitle, Size.X)}{Style.Reset}";
+            render[1] = $"{MenuBg}{MenuFg}{Utils.CenterText(_menuTitle, (int) Size.X)}{Style.Reset}";
 
             // draw all of the items
             for (var i = 0; i < _menuItems.Count; i++)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using MazeGame.Engine;
 
 namespace MazeGame.RenderObjects
@@ -52,11 +53,11 @@ namespace MazeGame.RenderObjects
             Size = new Vector2(Scene.Display.Width, Scene.Display.Height);
 
             // render the basic border outline around the whole screen
-            render[0] = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, Size.X - 2)}{Character.TopRight}";
-            render[Size.Y - 1] = $"{Character.BottomLeft}{Utils.Repeat(Character.Horizontal, Size.X - 2)}{Character.BottomRight}";
+            render[0] = $"{Character.TopLeft}{Utils.Repeat(Character.Horizontal, (int) Size.X - 2)}{Character.TopRight}";
+            render[(int) (Size.Y - 1)] = $"{Character.BottomLeft}{Utils.Repeat(Character.Horizontal, (int) Size.X - 2)}{Character.BottomRight}";
             for (var i = 0; i < Size.Y - 2; i++)
             {
-                render[i + 1] = $"{Character.Vertical}{Utils.Repeat(Character.Empty, Size.X - 2)}{Character.Vertical}";
+                render[i + 1] = $"{Character.Vertical}{Utils.Repeat(Character.Empty, (int) Size.X - 2)}{Character.Vertical}";
             }
 
             // border sections is optional so check for that
@@ -77,9 +78,9 @@ namespace MazeGame.RenderObjects
                     // top line
                     try
                     {
-                        render[borderSection.Position.Y] = render[borderSection.Position.Y]
-                            .Remove(borderSection.Position.X + 1, borderSection.Size.X - 2)
-                            .Insert(borderSection.Position.X + 1, Utils.Repeat(Character.Horizontal, borderSection.Size.X - 2));
+                        render[(int) borderSection.Position.Y] = render[(int) borderSection.Position.Y]
+                            .Remove((int) (borderSection.Position.X + 1), (int) (borderSection.Size.X - 2))
+                            .Insert((int) (borderSection.Position.X + 1), Utils.Repeat(Character.Horizontal, (int) borderSection.Size.X - 2));
                     }
                     catch (IndexOutOfRangeException e) {
                         Debug.WriteLine("Screen resized too small");
@@ -89,11 +90,11 @@ namespace MazeGame.RenderObjects
                     // bottom line
                     try
                     {
-                        render[borderSection.Position.Y + borderSection.Size.Y - 1] =
-                            render[borderSection.Position.Y + borderSection.Size.Y - 1]
-                                .Remove(borderSection.Position.X + 1, borderSection.Size.X - 2)
-                                .Insert(borderSection.Position.X + 1,
-                                    Utils.Repeat(Character.Horizontal, borderSection.Size.X - 2));
+                        render[(int) (borderSection.Position.Y + borderSection.Size.Y - 1)] =
+                            render[(int) (borderSection.Position.Y + borderSection.Size.Y - 1)]
+                                .Remove((int) (borderSection.Position.X + 1), (int) (borderSection.Size.X - 2))
+                                .Insert((int) (borderSection.Position.X + 1),
+                                    Utils.Repeat(Character.Horizontal, (int) borderSection.Size.X - 2));
                     }
                     catch (IndexOutOfRangeException e)
                     {
@@ -106,9 +107,9 @@ namespace MazeGame.RenderObjects
                     {
                         for (var i = 0; i < borderSection.Size.Y - 2; i++)
                         {
-                            char[] line = render[borderSection.Position.Y + i + 1].ToCharArray();
-                            line[borderSection.Position.X] = Character.Vertical;
-                            render[borderSection.Position.Y + i + 1] = string.Join("", line);
+                            char[] line = render[(int) (borderSection.Position.Y + i + 1)].ToCharArray();
+                            line[(int) borderSection.Position.X] = Character.Vertical;
+                            render[(int) (borderSection.Position.Y + i + 1)] = string.Join("", line);
                         }
                     }
                     catch (IndexOutOfRangeException e)
@@ -122,9 +123,9 @@ namespace MazeGame.RenderObjects
                     {
                         for (var i = 0; i < borderSection.Size.Y - 2; i++)
                         {
-                            char[] line = render[borderSection.Position.Y + i + 1].ToCharArray();
-                            line[borderSection.Position.X + borderSection.Size.X - 1] = Character.Vertical;
-                            render[borderSection.Position.Y + i + 1] = string.Join("", line);
+                            char[] line = render[(int) (borderSection.Position.Y + i + 1)].ToCharArray();
+                            line[(int) (borderSection.Position.X + borderSection.Size.X - 1)] = Character.Vertical;
+                            render[(int) (borderSection.Position.Y + i + 1)] = string.Join("", line);
                         }
                     }
                     catch (IndexOutOfRangeException e)
@@ -188,9 +189,9 @@ namespace MazeGame.RenderObjects
                     // draw the corner character
                     try
                     {
-                        char[] line = render[corner.Y].ToCharArray();
-                        line[corner.X] = borderCharacter;
-                        render[corner.Y] = string.Join("", line);
+                        char[] line = render[(int) corner.Y].ToCharArray();
+                        line[(int) corner.X] = borderCharacter;
+                        render[(int) corner.Y] = string.Join("", line);
                     }
                     catch (IndexOutOfRangeException e)
                     {
