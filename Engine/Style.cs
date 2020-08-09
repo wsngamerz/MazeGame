@@ -1,7 +1,9 @@
-﻿namespace MazeGame
+﻿using System.Linq;
+
+namespace MazeGame.Engine
 {
     /// <summary>
-    /// Holds all the ansi escape codes for styling text and their colours
+    /// Style holds all of the ansi escape sequence strings used to style and colour the display
     /// </summary>
     public static class Style
     {
@@ -12,7 +14,7 @@
         public const string Inverse = "\u001b[7m";
         
         /// <summary>
-        /// Foreground Colours
+        /// Foreground (text) styling
         /// </summary>
         public static class ForegroundColor
         {
@@ -34,10 +36,33 @@
             public const string BrightWhite = "\u001b[37;1m";
 
             public const string Grayscale235 = "\u001b[38;5;235m";
+            public const string Grayscale240 = "\u001b[38;5;240m";
+            public const string Grayscale245 = "\u001b[38;5;245m";
+            public const string Grayscale250 = "\u001b[38;5;250m";
+
+            /// <summary>
+            /// Convert a background colour string to a foreground colour string
+            /// </summary>
+            /// <param name="backgroundColour"></param>
+            /// <returns></returns>
+            public static string FromBackground(string backgroundColour)
+            {
+                return backgroundColour.Replace("[4", "[3");
+            }
+
+            /// <summary>
+            /// Get the colour string from a name of a colour such as "White"
+            /// </summary>
+            /// <param name="foregroundColourName"></param>
+            /// <returns></returns>
+            public static string FromString(string foregroundColourName)
+            {
+                return typeof(ForegroundColor).GetFields().Where(f => f.Name == foregroundColourName).Select(f => f.GetValue(f)?.ToString()).FirstOrDefault() ?? White;
+            }
         }
 
         /// <summary>
-        /// background colours
+        /// Background styling
         /// </summary>
         public static class BackgroundColor
         {
@@ -56,13 +81,23 @@
             public const string Grayscale250 = "\u001b[48;5;250m";
 
             /// <summary>
-            /// convert a foreground colour code to a background colour code
+            /// Convert a foreground colour string to a background colour string
             /// </summary>
             /// <param name="foregroundColour"></param>
             /// <returns></returns>
             public static string FromForeground(string foregroundColour)
             {
                 return foregroundColour.Replace("[3", "[4");
+            }
+            
+            /// <summary>
+            /// Get the colour string from a name of a colour such as "White"
+            /// </summary>
+            /// <param name="backgroundColourName"></param>
+            /// <returns></returns>
+            public static string FromString(string backgroundColourName)
+            {
+                return typeof(BackgroundColor).GetFields().Where(f => f.Name == backgroundColourName).Select(f => f.GetValue(f)?.ToString()).FirstOrDefault() ?? Black;
             }
         }
     }
