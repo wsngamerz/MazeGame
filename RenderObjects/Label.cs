@@ -1,4 +1,6 @@
-﻿namespace MazeGame.Engine.RenderObjects
+﻿using MazeGame.Engine;
+
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A simple label render object

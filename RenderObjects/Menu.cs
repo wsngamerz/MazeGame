@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using MazeGame.Engine;
 
-namespace MazeGame.Engine.RenderObjects
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A menu render object

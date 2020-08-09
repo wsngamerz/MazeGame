@@ -1,4 +1,6 @@
-﻿namespace MazeGame.Engine.RenderObjects
+﻿using MazeGame.Engine;
+
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A border section is a specific section within a larger border that can be used to draw out grids of sorts

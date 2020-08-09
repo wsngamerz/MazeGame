@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
+using MazeGame.Engine;
 using Newtonsoft.Json;
 
-namespace MazeGame.Engine.RenderObjects
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// An image object which will display an "image" made from ascii characters and is loaded from a json file

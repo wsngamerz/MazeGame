@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using MazeGame.Engine;
-using MazeGame.Engine.RenderObjects;
+using MazeGame.RenderObjects;
 
 namespace MazeGame.Scenes
 {

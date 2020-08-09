@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using MazeGame.Engine;
 
-namespace MazeGame.Engine.RenderObjects
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A render component which can draw borders based upon coordinates

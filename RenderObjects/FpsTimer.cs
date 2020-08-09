@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
+using MazeGame.Engine;
 
-namespace MazeGame.Engine.RenderObjects
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// An FPS timer

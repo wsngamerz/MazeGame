@@ -1,4 +1,4 @@
-﻿namespace MazeGame.Engine.RenderObjects
+﻿namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A menu item. Used internally inside the Menu render component

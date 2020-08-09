@@ -1,6 +1,7 @@
 ﻿using System;
+using MazeGame.Engine;
 
-namespace MazeGame.Engine.RenderObjects
+namespace MazeGame.RenderObjects
 {
     /// <summary>
     /// A text input box render component

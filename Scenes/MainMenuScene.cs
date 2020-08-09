@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MazeGame.Engine;
-using MazeGame.Engine.RenderObjects;
+using MazeGame.RenderObjects;
 
 namespace MazeGame.Scenes
 {
@@ -129,15 +129,16 @@ namespace MazeGame.Scenes
             var nameInputPos = new Vector2((Display.Width/2) - (TextInput.InputWidth/2), (Display.Height / 2) - 3);
             
             // text input with a submit handler
-            var nameInput = new TextInput("New Maze Name", nameInputPos)
+            var nameInput = new TextInput("New Maze Name", nameInputPos);
+            nameInput.OnSubmit = (value) =>
             {
-                OnSubmit = (value) =>
-                {
-                    // switch to the mazeEditorScene and pass it the name of the new maze
-                    Display.SwitchScene("mazeEditor");
-                    var scene = (MazeEditorScene) Display.CurrentScene;
-                    scene.MazeName = value;
-                }
+                // switch to the mazeEditorScene and pass it the name of the new maze
+                Display.SwitchScene("mazeEditor");
+                var scene = (MazeEditorScene) Display.CurrentScene;
+                scene.MazeName = value;
+                
+                // remove the name input from the scene render list
+                RemoveRenderObject(nameInput);
             };
             
             // render the object
